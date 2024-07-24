@@ -3,8 +3,37 @@ package common
 import (
 	"dbofmine/commons"
 	"errors"
+	"sync"
 	"time"
 )
+
+type IAbstractCache[T any] interface {
+	getForCache(key int64) (T, error)
+	releaseForCache(key T)
+}
+
+// ConcreteCache 实现了 IAbstractCache 接口
+type ConcreteCache struct {
+	cache map[int64]string
+	mu    sync.Mutex
+}
+
+func NewConcreteCache() *ConcreteCache {
+	return &ConcreteCache{
+		cache: make(map[int64]string),
+	}
+}
+
+// getForCache 实现接口方法，假设我们缓存的值是 string
+func (c *ConcreteCache) getForCache(key int64) (int64, error) {
+
+	return key, nil
+}
+
+// releaseForCache 实现接口方法，删除缓存中的值
+func (c *ConcreteCache) releaseForCache(key int64) {
+
+}
 
 type AbstractCache[T any] struct {
 	// 实际缓存的数据
@@ -20,22 +49,23 @@ type AbstractCache[T any] struct {
 	count int
 	lock  commons.ReentrantLock
 
-	// getForCache 获取缓存中的资源
-	getForCache func(key int64) (T, error)
-	// releaseForCache 从缓存中删除资源
-	releaseForCache func(key T)
+	//// getForCache 获取缓存中的资源
+	//getForCache func(key int64) (T, error)
+	//// releaseForCache 从缓存中删除资源
+	//releaseForCache func(key T)
+
+	iAbstractCache IAbstractCache[T]
 }
 
 // NewAbstractCache 创建一个新的缓存
-func NewAbstractCache[T any](maxResource int, getForCache func(key int64) (T, error), releaseForCache func(key T)) *AbstractCache[T] {
+func NewAbstractCache[T any](maxResource int, cacheImpl IAbstractCache[T]) *AbstractCache[T] {
 	return &AbstractCache[T]{
-		cache:           make(map[int64]T),
-		references:      make(map[int64]int),
-		getting:         make(map[int64]bool),
-		maxResource:     maxResource,
-		count:           0,
-		getForCache:     getForCache,
-		releaseForCache: releaseForCache,
+		cache:          make(map[int64]T),
+		references:     make(map[int64]int),
+		getting:        make(map[int64]bool),
+		maxResource:    maxResource,
+		count:          0,
+		iAbstractCache: cacheImpl,
 		//lock:            sync.Mutex{}, // 这里不初始化也行，默认的也有值
 	}
 }
@@ -75,7 +105,7 @@ func (cache *AbstractCache[T]) Get(key int64) (T, error) {
 	}
 	var obj T
 	// 获取资源
-	obj, err := cache.getForCache(key)
+	obj, err := cache.iAbstractCache.getForCache(key)
 	if err != nil {
 		cache.lock.Lock()
 		cache.count--
@@ -108,7 +138,7 @@ func (cache *AbstractCache[T]) Release(key int64) {
 			// 释放资源失败
 			return
 		}
-		cache.releaseForCache(obj)
+		cache.iAbstractCache.releaseForCache(obj)
 		delete(cache.references, key)
 		delete(cache.cache, key)
 		cache.count--
@@ -134,7 +164,7 @@ func (cache *AbstractCache[T]) Close() {
 	// 遍历键并执行释放操作
 	for _, key := range keys {
 		obj := cache.cache[key]
-		cache.releaseForCache(obj)
+		cache.iAbstractCache.releaseForCache(obj)
 		delete(cache.references, key)
 		delete(cache.cache, key)
 		cache.count--

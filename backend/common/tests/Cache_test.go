@@ -8,17 +8,11 @@ import (
 	"testing"
 )
 
-func getForCache(key int64) (int64, error) {
-	return key, nil
-}
-
-func releaseForCache(obj int64) {
-
-}
-
 func TestAbstractCache(t *testing.T) {
 	t.Log("TestAbstractCache")
-	cache := common.NewAbstractCache(50, getForCache, releaseForCache)
+	mockCache := &common.MockCache{}
+	cache := common.NewAbstractCache[int64](50, mockCache)
+
 	wg := sync.WaitGroup{}
 	wg.Add(50)
 
