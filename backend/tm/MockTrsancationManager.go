@@ -1,7 +1,7 @@
 package tm
 
 import (
-	"dbofmine/backend/commons"
+	"dbofmine/commons"
 	"sync"
 )
 

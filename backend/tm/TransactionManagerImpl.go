@@ -2,7 +2,7 @@ package tm
 
 import (
 	"dbofmine/backend/utils"
-	"dbofmine/common"
+	"dbofmine/commons"
 	"encoding/binary"
 	"os"
 	"sync"
@@ -39,7 +39,7 @@ func CreateTransactionManagerImpl(path string) (*TransactionManagerImpl, error) 
 	var transactionManager *TransactionManagerImpl
 	// 如果文件已经存在那么直接报错
 	if utils.FileExists(path) {
-		panic(common.ErrorMessage.FileExistError)
+		panic(commons.ErrorMessage.FileExistError)
 	}
 	// 尝试打开文件
 	file, err := os.OpenFile(path+XID_SUFFIX, os.O_RDWR|os.O_CREATE, 0755)
@@ -58,7 +58,7 @@ func CreateTransactionManagerImpl(path string) (*TransactionManagerImpl, error) 
 		return nil, err
 	}
 	if int64(writeNum) != LEN_XID_HEADER_LENGTH {
-		panic(common.ErrorMessage.WriteFileHeaderError)
+		panic(commons.ErrorMessage.WriteFileHeaderError)
 	}
 	return transactionManager, nil
 }
@@ -66,7 +66,7 @@ func CreateTransactionManagerImpl(path string) (*TransactionManagerImpl, error) 
 func OpenTransactionManagerImpl(path string) (*TransactionManagerImpl, error) {
 	// 如果文件不存在那么直接报错
 	if !utils.FileExists(path) {
-		panic(common.ErrorMessage.FileExistError)
+		panic(commons.ErrorMessage.FileExistError)
 	}
 	// 尝试打开文件
 	file, err := os.OpenFile(path, os.O_RDWR, 0755)
@@ -85,7 +85,7 @@ func (manager *TransactionManagerImpl) checkXidCounter() {
 	// 获取文件长度
 	fileLength, _ := utils.GetFileSize(manager.file.Name())
 	if fileLength < LEN_XID_HEADER_LENGTH {
-		panic(common.ErrorMessage.BadXIDFileException)
+		panic(commons.ErrorMessage.BadXIDFileException)
 	}
 	// 读取xid头标识的文件长度
 	xidHeader := make([]byte, LEN_XID_HEADER_LENGTH)
