@@ -3,36 +3,12 @@ package common
 import (
 	"dbofmine/commons"
 	"errors"
-	"sync"
 	"time"
 )
 
 type IAbstractCache[T any] interface {
-	getForCache(key int64) (T, error)
-	releaseForCache(key T)
-}
-
-// ConcreteCache 实现了 IAbstractCache 接口
-type ConcreteCache struct {
-	cache map[int64]string
-	mu    sync.Mutex
-}
-
-func NewConcreteCache() *ConcreteCache {
-	return &ConcreteCache{
-		cache: make(map[int64]string),
-	}
-}
-
-// getForCache 实现接口方法，假设我们缓存的值是 string
-func (c *ConcreteCache) getForCache(key int64) (int64, error) {
-
-	return key, nil
-}
-
-// releaseForCache 实现接口方法，删除缓存中的值
-func (c *ConcreteCache) releaseForCache(key int64) {
-
+	GetForCache(key int64) (T, error)
+	ReleaseForCache(key T)
 }
 
 type AbstractCache[T any] struct {
@@ -49,10 +25,10 @@ type AbstractCache[T any] struct {
 	count int
 	lock  commons.ReentrantLock
 
-	//// getForCache 获取缓存中的资源
-	//getForCache func(key int64) (T, error)
-	//// releaseForCache 从缓存中删除资源
-	//releaseForCache func(key T)
+	//// GetForCache 获取缓存中的资源
+	//GetForCache func(key int64) (T, error)
+	//// ReleaseForCache 从缓存中删除资源
+	//ReleaseForCache func(key T)
 
 	iAbstractCache IAbstractCache[T]
 }
@@ -105,7 +81,7 @@ func (cache *AbstractCache[T]) Get(key int64) (T, error) {
 	}
 	var obj T
 	// 获取资源
-	obj, err := cache.iAbstractCache.getForCache(key)
+	obj, err := cache.iAbstractCache.GetForCache(key)
 	if err != nil {
 		cache.lock.Lock()
 		cache.count--
@@ -115,7 +91,6 @@ func (cache *AbstractCache[T]) Get(key int64) (T, error) {
 	}
 
 	cache.lock.Lock()
-	commons.Logger.Debug(cache.lock)
 
 	cache.getting[key] = false
 	cache.cache[key] = obj
@@ -138,10 +113,11 @@ func (cache *AbstractCache[T]) Release(key int64) {
 			// 释放资源失败
 			return
 		}
-		cache.iAbstractCache.releaseForCache(obj)
+		cache.iAbstractCache.ReleaseForCache(obj)
 		delete(cache.references, key)
 		delete(cache.cache, key)
 		cache.count--
+
 		return
 	} else {
 		cache.references[key] = ref
@@ -164,7 +140,7 @@ func (cache *AbstractCache[T]) Close() {
 	// 遍历键并执行释放操作
 	for _, key := range keys {
 		obj := cache.cache[key]
-		cache.iAbstractCache.releaseForCache(obj)
+		cache.iAbstractCache.ReleaseForCache(obj)
 		delete(cache.references, key)
 		delete(cache.cache, key)
 		cache.count--

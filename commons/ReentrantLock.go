@@ -16,7 +16,7 @@ type ReentrantLock struct {
 
 func (r *ReentrantLock) Lock() {
 	id := getGoroutineID()
-	Logger.Debugf("Lock goroutine id: %d", id)
+	//Logger.Debugf("Lock goroutine id: %d", id)
 	r.mu.Lock()
 	if r.owner == id {
 		r.count++
@@ -34,8 +34,8 @@ func (r *ReentrantLock) Lock() {
 
 func (r *ReentrantLock) Unlock() {
 	id := getGoroutineID()
-	Logger.Debugf("Unlock goroutine id: %d", id)
-	Logger.Debugf("Lock owner id: %d", r.owner)
+	//Logger.Debugf("Unlock goroutine id: %d", id)
+	//Logger.Debugf("Lock owner id: %d", r.owner)
 	r.mu.Lock()
 	if r.owner != id {
 		r.mu.Unlock()
