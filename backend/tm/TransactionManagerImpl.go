@@ -83,7 +83,7 @@ func OpenTransactionManagerImpl(path string) (*TransactionManagerImpl, error) {
 // 读取XID_FILE_HEADER中的xidCounter，根据它计算文件的理论长度，对比实际长度
 func (manager *TransactionManagerImpl) checkXidCounter() {
 	// 获取文件长度
-	fileLength, _ := utils.GetFileSize(manager.file.Name())
+	fileLength, _ := utils.GetFileSizeByPath(manager.file.Name())
 	if fileLength < LEN_XID_HEADER_LENGTH {
 		panic(commons.ErrorMessage.BadXIDFileException)
 	}

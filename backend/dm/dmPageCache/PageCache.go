@@ -84,7 +84,7 @@ func NewPageCacheImpl(path string, memory int64) *PageCache {
 	}
 
 	// 获取文件长度
-	fileLength, _ := utils.GetFileSize(path + DB_SUFFIX)
+	fileLength, _ := utils.GetFileSizeByPath(path + DB_SUFFIX)
 	pageCacheImpl := PageCache{
 		file:         file,
 		pageNumbers:  int32(int(fileLength / int64(PageSize))),
@@ -94,6 +94,9 @@ func NewPageCacheImpl(path string, memory int64) *PageCache {
 
 	// 计算最大缓存数量
 	maxResource := int(memory / int64(PageSize))
+	if maxResource < MEM_MIN_LIM {
+		panic(commons.ErrorMessage.AllocMemoryTooSmallError)
+	}
 	cache := common.NewAbstractCache[*Page](maxResource, &pageCacheImpl)
 
 	// 把抽象缓存创建出来赋值
@@ -107,7 +110,7 @@ func OpenPageCacheImpl(path string, memory int64) *PageCache {
 	file, _ := os.OpenFile(path+DB_SUFFIX, os.O_RDWR, 0755)
 
 	// 获取文件长度
-	fileLength, _ := utils.GetFileSize(path + DB_SUFFIX)
+	fileLength, _ := utils.GetFileSizeByPath(path + DB_SUFFIX)
 	pageCacheImpl := PageCache{
 		file:         file,
 		pageNumbers:  int32(int(fileLength / int64(PageSize))),
