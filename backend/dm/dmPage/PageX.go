@@ -1,0 +1,69 @@
+package dmPage
+
+import (
+	"dbofmine/backend/dm/dmPageCache"
+	"encoding/binary"
+)
+
+type PageX struct {
+}
+
+var (
+	PageXOffsetFreeSpace int32 = 0
+	PageXOffsetDataSize  int32 = 2
+	PageXMaxFreeSpace          = dmPageCache.PageSize - int(PageXOffsetDataSize)
+)
+
+func PageXInitRaw() []byte {
+	data := make([]byte, dmPageCache.PageSize)
+	return data
+}
+
+func PageXSetFreeSpaceOffset(raw []byte, offsetData int32) {
+	binary.BigEndian.PutUint32(raw[int(PageXOffsetFreeSpace):int(PageXOffsetDataSize)], uint32(offsetData))
+}
+
+// PageXGetPageFreeSpaceOffset 获得页面当前的空闲位置的起始偏移量
+func PageXGetPageFreeSpaceOffset(page *dmPageCache.Page) int32 {
+	return PageXGetFreeSpaceOffset(page.GetData())
+}
+
+// PageXGetFreeSpaceOffset 根据原始数据转换获得空闲位置的起始偏移量
+func PageXGetFreeSpaceOffset(raw []byte) int32 {
+	return int32(binary.BigEndian.Uint32(raw[0:PageXOffsetDataSize]))
+}
+
+// InsertData2PageX 向页面中插入数据data，返回插入位置
+func InsertData2PageX(page *dmPageCache.Page, data []byte) int32 {
+	page.SetDirty(true)
+	// 获取页面的空闲位置偏移量
+	offset := PageXGetFreeSpaceOffset(page.GetData())
+	pageData := page.GetData()
+	// 将data数据复制到页中的空闲位置
+	copy(pageData[offset:offset+int32(len(data))], data)
+	// 更新新的空闲位置
+	PageXSetFreeSpaceOffset(pageData, offset+int32(len(data)))
+
+	return offset
+}
+
+// PageXGetFreeSpace 获得页面的剩余空间
+func PageXGetFreeSpace(page *dmPageCache.Page) int32 {
+	return int32(dmPageCache.PageSize) - PageXGetFreeSpaceOffset(page.GetData())
+}
+
+// PageXRecoverInsert 恢复插入数据
+func PageXRecoverInsert(page *dmPageCache.Page, raw []byte, offset int32) {
+	page.SetDirty(true)
+	copy(page.GetData()[offset:offset+int32(len(raw))], raw)
+	spaceOffset := PageXGetFreeSpaceOffset(page.GetData())
+	if spaceOffset < offset+int32(len(raw)) {
+		PageXSetFreeSpaceOffset(page.GetData(), offset+int32(len(raw)))
+	}
+}
+
+// PageXRecoverUpdate 恢复更新数据
+func PageXRecoverUpdate(page *dmPageCache.Page, raw []byte, offset int32) {
+	page.SetDirty(true)
+	copy(page.GetData()[offset:offset+int32(len(raw))], raw)
+}
