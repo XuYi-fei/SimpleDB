@@ -1,7 +1,7 @@
 package dmPage
 
 import (
-	"dbofmine/backend/dm/dmPageCache"
+	"dbofmine/backend/dm/constants"
 	"encoding/binary"
 )
 
@@ -11,11 +11,11 @@ type PageX struct {
 var (
 	PageXOffsetFreeSpace int32 = 0
 	PageXOffsetDataSize  int32 = 2
-	PageXMaxFreeSpace          = dmPageCache.PageSize - int(PageXOffsetDataSize)
+	PageXMaxFreeSpace          = constants.PageSize - int(PageXOffsetDataSize)
 )
 
 func PageXInitRaw() []byte {
-	data := make([]byte, dmPageCache.PageSize)
+	data := make([]byte, constants.PageSize)
 	return data
 }
 
@@ -24,7 +24,7 @@ func PageXSetFreeSpaceOffset(raw []byte, offsetData int32) {
 }
 
 // PageXGetPageFreeSpaceOffset 获得页面当前的空闲位置的起始偏移量
-func PageXGetPageFreeSpaceOffset(page *dmPageCache.Page) int32 {
+func PageXGetPageFreeSpaceOffset(page *Page) int32 {
 	return PageXGetFreeSpaceOffset(page.GetData())
 }
 
@@ -34,7 +34,7 @@ func PageXGetFreeSpaceOffset(raw []byte) int32 {
 }
 
 // InsertData2PageX 向页面中插入数据data，返回插入位置
-func InsertData2PageX(page *dmPageCache.Page, data []byte) int32 {
+func InsertData2PageX(page *Page, data []byte) int32 {
 	page.SetDirty(true)
 	// 获取页面的空闲位置偏移量
 	offset := PageXGetFreeSpaceOffset(page.GetData())
@@ -48,12 +48,12 @@ func InsertData2PageX(page *dmPageCache.Page, data []byte) int32 {
 }
 
 // PageXGetFreeSpace 获得页面的剩余空间
-func PageXGetFreeSpace(page *dmPageCache.Page) int32 {
-	return int32(dmPageCache.PageSize) - PageXGetFreeSpaceOffset(page.GetData())
+func PageXGetFreeSpace(page *Page) int32 {
+	return int32(constants.PageSize) - PageXGetFreeSpaceOffset(page.GetData())
 }
 
 // PageXRecoverInsert 恢复插入数据
-func PageXRecoverInsert(page *dmPageCache.Page, raw []byte, offset int32) {
+func PageXRecoverInsert(page *Page, raw []byte, offset int32) {
 	page.SetDirty(true)
 	copy(page.GetData()[offset:offset+int32(len(raw))], raw)
 	spaceOffset := PageXGetFreeSpaceOffset(page.GetData())
@@ -63,7 +63,7 @@ func PageXRecoverInsert(page *dmPageCache.Page, raw []byte, offset int32) {
 }
 
 // PageXRecoverUpdate 恢复更新数据
-func PageXRecoverUpdate(page *dmPageCache.Page, raw []byte, offset int32) {
+func PageXRecoverUpdate(page *Page, raw []byte, offset int32) {
 	page.SetDirty(true)
 	copy(page.GetData()[offset:offset+int32(len(raw))], raw)
 }

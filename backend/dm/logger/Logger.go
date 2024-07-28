@@ -23,7 +23,7 @@ var (
 	LogSuffix = ".log"
 )
 
-type Logger struct {
+type DBLogger struct {
 	file *os.File
 
 	lock commons.ReentrantLock
@@ -37,7 +37,7 @@ type Logger struct {
 }
 
 // CreateLogger 创建一个新的日志管理器
-func CreateLogger(path string) *Logger {
+func CreateLogger(path string) *DBLogger {
 	// 创建日志文件，不能存在
 	if utils.FileExists(path + LogSuffix) {
 		panic(commons.ErrorMessage.FileExistError)
@@ -59,7 +59,7 @@ func CreateLogger(path string) *Logger {
 }
 
 // OpenLogger 打开一个已经存在的日志文件
-func OpenLogger(path string) *Logger {
+func OpenLogger(path string) *DBLogger {
 	// 日志文件必须存在
 	file, err := os.OpenFile(path+LogSuffix, os.O_RDWR, 0755)
 	if err != nil {
@@ -73,14 +73,14 @@ func OpenLogger(path string) *Logger {
 }
 
 // NewLogger 创建一个新的日志管理器
-func NewLogger(file *os.File, xCheckSum ...int32) *Logger {
+func NewLogger(file *os.File, xCheckSum ...int32) *DBLogger {
 	if len(xCheckSum) == 0 {
-		return &Logger{
+		return &DBLogger{
 			file: file,
 		}
 	}
 
-	return &Logger{
+	return &DBLogger{
 		file:      file,
 		xCheckSum: xCheckSum[0],
 	}

@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"dbofmine/backend/dm/dmPageCache"
+	"dbofmine/backend/dm/constants"
 	"dbofmine/backend/dm/dmPageIndex"
 	"testing"
 )
@@ -9,7 +9,7 @@ import (
 func TestPageIndex(t *testing.T) {
 	t.Log("PageIndex test")
 	pageIndex := dmPageIndex.NewPageIndex()
-	threshold := dmPageCache.PageSize / 20
+	threshold := constants.PageSize / 20
 	for i := 0; i < 20; i++ {
 		pageIndex.Add(int32(i), int32(i*threshold))
 		pageIndex.Add(int32(i), int32(i*threshold))

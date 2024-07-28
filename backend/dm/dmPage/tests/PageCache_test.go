@@ -1,8 +1,8 @@
 package tests
 
 import (
+	"dbofmine/backend/dm/constants"
 	"dbofmine/backend/dm/dmPage"
-	"dbofmine/backend/dm/dmPageCache"
 	"dbofmine/backend/utils"
 	"dbofmine/commons"
 	"github.com/sirupsen/logrus"
@@ -19,9 +19,9 @@ var (
 
 func TestPageCacheImpl(t *testing.T) {
 	t.Log("TestPageCacheImpl")
-	pc := dmPageCache.NewPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCache", int64(dmPageCache.PageSize*50))
+	pc := dmPage.NewPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPage", int64(constants.PageSize*50))
 	for i := 0; i < 100; i++ {
-		tmp := make([]byte, dmPageCache.PageSize)
+		tmp := make([]byte, constants.PageSize)
 		tmp[0] = byte(i)
 
 		pageNumber := pc.NewPage(tmp)
@@ -34,7 +34,7 @@ func TestPageCacheImpl(t *testing.T) {
 	}
 	pc.Close()
 
-	pc = dmPageCache.OpenPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCache", int64(dmPageCache.PageSize*50))
+	pc = dmPage.OpenPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPage", int64(constants.PageSize*50))
 	for i := 1; i <= 100; i++ {
 		page, _ := pc.GetPage(i)
 		if page.GetData()[0] != byte(i-1) {
@@ -44,12 +44,12 @@ func TestPageCacheImpl(t *testing.T) {
 	}
 	pc.Close()
 
-	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCache" + dmPageCache.DB_SUFFIX)
+	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPage" + dmPage.DB_SUFFIX)
 }
 
 func TestPageCacheMultiSimple(t *testing.T) {
 	logger := commons.NewLoggerByLevel(logrus.InfoLevel)
-	pc1 := dmPageCache.NewPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheSimpleTest", int64(dmPageCache.PageSize*50))
+	pc1 := dmPage.NewPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheSimpleTest", int64(constants.PageSize*50))
 
 	wg := sync.WaitGroup{}
 	wg.Add(200)
@@ -64,7 +64,7 @@ func TestPageCacheMultiSimple(t *testing.T) {
 				if op == 0 {
 					//atomic.AddInt32(&zeroCnt, 1)
 					// 生成随机页
-					data := utils.SafeRandomBytes(dmPageCache.PageSize)
+					data := utils.SafeRandomBytes(constants.PageSize)
 					pageNumber := pc1.NewPage(data)
 					logger.Debugf("Adding key: %d, op: %d", pageNumber, op)
 					// 获取刚刚的页，现在应该是从缓存读取
@@ -102,14 +102,14 @@ func TestPageCacheMultiSimple(t *testing.T) {
 	wg.Wait()
 	pc1.Close()
 	//commons.Logger.Infof("zeroCnt: %d, oneCnt: %d", zeroCnt, oneCnt)
-	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheSimpleTest" + dmPageCache.DB_SUFFIX)
+	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheSimpleTest" + dmPage.DB_SUFFIX)
 
 }
 
 func TestPageCacheMulti(t *testing.T) {
-	pc2 := dmPageCache.NewPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheMultiTest", int64(dmPageCache.PageSize*50))
-	defer os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheMultiTest" + dmPageCache.DB_SUFFIX)
-	mpc := &dmPageCache.MockPageCache{
+	pc2 := dmPage.NewPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheMultiTest", int64(constants.PageSize*50))
+	defer os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheMultiTest" + dmPage.DB_SUFFIX)
+	mpc := &dmPage.MockPageCache{
 		Cache: make(map[int]*dmPage.MockPage),
 	}
 	lock := commons.ReentrantLock{}
@@ -123,7 +123,7 @@ func TestPageCacheMulti(t *testing.T) {
 			for i := 0; i < 1000; i++ {
 				op := utils.SafeRandomInt(20)
 				if op == 0 {
-					data := utils.SafeRandomBytes(dmPageCache.PageSize)
+					data := utils.SafeRandomBytes(constants.PageSize)
 					lock.Lock()
 					pageNumber := pc2.NewPage(data)
 					mockPageNumber := mpc.NewPage(data)
@@ -162,15 +162,15 @@ func TestPageCacheMulti(t *testing.T) {
 						panic(err)
 					}
 					mockPage := mpc.GetPage(pageNumber)
-					newData := utils.SafeRandomBytes(dmPageCache.PageSize)
+					newData := utils.SafeRandomBytes(constants.PageSize)
 
 					page.Lock()
 					mockPage.SetDirty(true)
-					for j := 0; j < dmPageCache.PageSize; j++ {
+					for j := 0; j < constants.PageSize; j++ {
 						mockPage.GetData()[j] = newData[j]
 					}
 					page.SetDirty(true)
-					for j := 0; j < dmPageCache.PageSize; j++ {
+					for j := 0; j < constants.PageSize; j++ {
 						page.GetData()[j] = newData[j]
 					}
 					page.Unlock()

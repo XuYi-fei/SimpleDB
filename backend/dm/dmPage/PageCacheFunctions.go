@@ -1,13 +1,16 @@
-package dmPageCache
+package dmPage
 
-import "sync/atomic"
+import (
+	"dbofmine/backend/dm/constants"
+	"sync/atomic"
+)
 
 // GetForCache 实现抽象缓存接口
 func (pageCacheImpl *PageCache) GetForCache(key int64) (*Page, error) {
 	pageNo := int(key)
 	offset := pageCacheImpl.pageOffset(pageNo)
 
-	buf := make([]byte, PageSize)
+	buf := make([]byte, constants.PageSize)
 	// 加锁，准备获取页面数据
 	pageCacheImpl.lock.Lock()
 	defer pageCacheImpl.lock.Unlock()
@@ -85,5 +88,5 @@ func (pageCacheImpl *PageCache) getPageNumber() int {
 }
 
 func (pageCacheImpl *PageCache) pageOffset(pageNo int) int64 {
-	return int64((pageNo - 1) * PageSize)
+	return int64((pageNo - 1) * constants.PageSize)
 }

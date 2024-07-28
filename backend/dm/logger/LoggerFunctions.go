@@ -8,7 +8,7 @@ import (
 )
 
 // init 对logger进行初始化，主要是获取文件大小并进行文件大小和校验和的校验
-func (logger *Logger) init() {
+func (logger *DBLogger) init() {
 	// 获取文件大小
 	size, err := utils.GetFileSize(logger.file)
 	if err != nil {
@@ -32,7 +32,7 @@ func (logger *Logger) init() {
 }
 
 // 对校验和进行检查并且移除后面的截断部分
-func (logger *Logger) checkAndRemoveTail() {
+func (logger *DBLogger) checkAndRemoveTail() {
 
 	var xCheck int32 = 0
 	// 从头开始读取，计算校验和
@@ -63,7 +63,7 @@ func (logger *Logger) checkAndRemoveTail() {
 }
 
 // calCheckSum 计算校验和
-func (logger *Logger) calCheckSum(xCheck int32, log []byte) int32 {
+func (logger *DBLogger) calCheckSum(xCheck int32, log []byte) int32 {
 	for _, b := range log {
 		xCheck = xCheck*SEED + int32(b)
 	}
@@ -71,7 +71,7 @@ func (logger *Logger) calCheckSum(xCheck int32, log []byte) int32 {
 }
 
 // Log 记录日志
-func (logger *Logger) Log(data []byte) {
+func (logger *DBLogger) Log(data []byte) {
 	logger.lock.Lock()
 	defer logger.lock.Unlock()
 
@@ -95,7 +95,7 @@ func (logger *Logger) Log(data []byte) {
 }
 
 // updateXCheckSum 更新校验和
-func (logger *Logger) updateXCheckSum(log []byte) {
+func (logger *DBLogger) updateXCheckSum(log []byte) {
 	logger.xCheckSum = int32(logger.calCheckSum(logger.xCheckSum, log))
 	checkSum := make([]byte, 4)
 	binary.BigEndian.PutUint32(checkSum, uint32(logger.xCheckSum))
@@ -108,7 +108,7 @@ func (logger *Logger) updateXCheckSum(log []byte) {
 }
 
 // wrapLog 将数据包装成日志条目
-func (logger *Logger) wrapLog(data []byte) []byte {
+func (logger *DBLogger) wrapLog(data []byte) []byte {
 	checkSum := make([]byte, 4)
 	binary.BigEndian.PutUint32(checkSum, uint32(logger.calCheckSum(0, data)))
 	size := make([]byte, 4)
@@ -117,7 +117,7 @@ func (logger *Logger) wrapLog(data []byte) []byte {
 }
 
 // Truncate 截断文件
-func (logger *Logger) Truncate(x int64) error {
+func (logger *DBLogger) Truncate(x int64) error {
 	logger.lock.Lock()
 	defer logger.lock.Unlock()
 
@@ -125,7 +125,7 @@ func (logger *Logger) Truncate(x int64) error {
 }
 
 // internNext 读取下一个日志条目
-func (logger *Logger) internNext() []byte {
+func (logger *DBLogger) internNext() []byte {
 	// 如果当前文件指针位置 + 8字节 大于等于了文件大小，直接返回
 	// 这里8字节是因为每条日志内部的前边4个字节是size，接着4个字节是检验和，再往后才是数据
 	if logger.currentPosition+int64(OffsetDataSize) >= logger.fileSize {
@@ -162,7 +162,7 @@ func (logger *Logger) internNext() []byte {
 	return buf
 }
 
-func (logger *Logger) Next() []byte {
+func (logger *DBLogger) Next() []byte {
 	logger.lock.Lock()
 	defer logger.lock.Unlock()
 
@@ -174,12 +174,12 @@ func (logger *Logger) Next() []byte {
 }
 
 // Rewind 将文件指针位置重新定位到最开始的校验和后面，即4字节的位置
-func (logger *Logger) Rewind() {
+func (logger *DBLogger) Rewind() {
 	logger.currentPosition = int64(OffsetCheckSumSize)
 }
 
 // Close 关闭文件
-func (logger *Logger) Close() {
+func (logger *DBLogger) Close() {
 	err := logger.file.Close()
 	if err != nil {
 		panic(err)

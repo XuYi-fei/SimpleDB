@@ -1,14 +1,11 @@
-package dmPageCache
+package dmPage
 
 import (
 	"dbofmine/backend/common"
+	"dbofmine/backend/dm/constants"
 	"dbofmine/backend/utils"
 	"dbofmine/commons"
 	"os"
-)
-
-var (
-	PageSize = 1 << 13
 )
 
 // Page 页面实现
@@ -87,13 +84,13 @@ func NewPageCacheImpl(path string, memory int64) *PageCache {
 	fileLength, _ := utils.GetFileSizeByPath(path + DB_SUFFIX)
 	pageCacheImpl := PageCache{
 		file:         file,
-		pageNumbers:  int32(int(fileLength / int64(PageSize))),
+		pageNumbers:  int32(int(fileLength / int64(constants.PageSize))),
 		lock:         commons.ReentrantLock{},
 		cacheManager: nil,
 	}
 
 	// 计算最大缓存数量
-	maxResource := int(memory / int64(PageSize))
+	maxResource := int(memory / int64(constants.PageSize))
 	if maxResource < MEM_MIN_LIM {
 		panic(commons.ErrorMessage.AllocMemoryTooSmallError)
 	}
@@ -113,13 +110,13 @@ func OpenPageCacheImpl(path string, memory int64) *PageCache {
 	fileLength, _ := utils.GetFileSizeByPath(path + DB_SUFFIX)
 	pageCacheImpl := PageCache{
 		file:         file,
-		pageNumbers:  int32(int(fileLength / int64(PageSize))),
+		pageNumbers:  int32(int(fileLength / int64(constants.PageSize))),
 		lock:         commons.ReentrantLock{},
 		cacheManager: nil,
 	}
 
 	// 计算最大缓存数量
-	maxResource := int(memory / int64(PageSize))
+	maxResource := int(memory / int64(constants.PageSize))
 	cache := common.NewAbstractCache[*Page](maxResource, &pageCacheImpl)
 
 	// 把抽象缓存创建出来赋值

@@ -1,12 +1,11 @@
-package dmPageCache
+package dmPage
 
 import (
-	"dbofmine/backend/dm/dmPage"
 	"dbofmine/commons"
 )
 
 type MockPageCache struct {
-	Cache map[int]*dmPage.MockPage
+	Cache map[int]*MockPage
 	// 需要原子操作页数
 	pageNumbers int
 	// 可重入锁
@@ -20,13 +19,13 @@ func (pageCache *MockPageCache) NewPage(initData []byte) int {
 	defer pageCache.lock.Unlock()
 
 	pageNumber := pageCache.pageNumbers + 1
-	newMockPage := dmPage.NewMockPage(pageNumber, initData)
+	newMockPage := NewMockPage(pageNumber, initData)
 	pageCache.Cache[pageNumber] = newMockPage
 	pageCache.pageNumbers++
 	return pageNumber
 }
 
-func (pageCache *MockPageCache) GetPage(pageNumber int) *dmPage.MockPage {
+func (pageCache *MockPageCache) GetPage(pageNumber int) *MockPage {
 	pageCache.lock.Lock()
 	defer pageCache.lock.Unlock()
 
@@ -37,7 +36,7 @@ func (pageCache *MockPageCache) Close() {
 
 }
 
-func (pageCache *MockPageCache) Release(page *dmPage.MockPage) {
+func (pageCache *MockPageCache) Release(page *MockPage) {
 
 }
 
@@ -51,6 +50,6 @@ func (pageCache *MockPageCache) GetPageNumber() int {
 	return pageCache.pageNumbers
 }
 
-func (pageCache *MockPageCache) flushPage(pg *dmPage.MockPage) {
+func (pageCache *MockPageCache) flushPage(pg *MockPage) {
 
 }

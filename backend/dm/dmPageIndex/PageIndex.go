@@ -1,7 +1,7 @@
 package dmPageIndex
 
 import (
-	"dbofmine/backend/dm/dmPageCache"
+	"dbofmine/backend/dm/constants"
 	"dbofmine/commons"
 )
 
@@ -9,7 +9,7 @@ var (
 	// IntervalsNumber 将一页划分为40个区间
 	IntervalsNumber int32 = 40
 	// IntervalSize 区间大小
-	IntervalSize int32 = int32(dmPageCache.PageSize) / IntervalsNumber
+	IntervalSize int32 = int32(constants.PageSize) / IntervalsNumber
 )
 
 type PageIndex struct {

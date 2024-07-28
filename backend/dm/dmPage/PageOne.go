@@ -1,7 +1,7 @@
 package dmPage
 
 import (
-	"dbofmine/backend/dm/dmPageCache"
+	"dbofmine/backend/dm/constants"
 	"dbofmine/backend/utils"
 )
 
@@ -16,13 +16,13 @@ type PageOne struct {
 }
 
 func PageOneInitRaw() []byte {
-	raw := make([]byte, dmPageCache.PageSize)
+	raw := make([]byte, constants.PageSize)
 	PageOneSetValidOpenData(raw)
 	return raw
 }
 
 // PageOneSetValidStatusOpen 设置校验状态为真
-func PageOneSetValidStatusOpen(page *dmPageCache.Page) {
+func PageOneSetValidStatusOpen(page *Page) {
 	page.SetDirty(true)
 	PageOneSetValidOpenData(page.GetData())
 }
@@ -33,7 +33,7 @@ func PageOneSetValidOpenData(data []byte) {
 	copy(data[PageOneOffsetValidCheck:], randomBytes)
 }
 
-func PageOneSetValidStatusClose(page *dmPageCache.Page) {
+func PageOneSetValidStatusClose(page *Page) {
 	page.SetDirty(false)
 	PageOneSetValidCloseData(page.GetData())
 }
@@ -43,7 +43,7 @@ func PageOneSetValidCloseData(data []byte) {
 	copy(data[PageOneOffsetValidCheck+PageOneLengthValidCheck:PageOneOffsetValidCheck+2*PageOneLengthValidCheck], data[PageOneOffsetValidCheck:PageOneOffsetValidCheck+PageOneLengthValidCheck])
 }
 
-func CheckPageOneValid(page *dmPageCache.Page) bool {
+func CheckPageOneValid(page *Page) bool {
 	return CheckPageOneDataValid(page.GetData())
 }
 
