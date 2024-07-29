@@ -19,6 +19,11 @@ type ErrorMessageType struct {
 	BadLogFileError string
 	// 日志校验失败错误
 	BadLogCheckSumError string
+
+	// Data数据太大错误
+	DataTooLargeError string
+	// 数据库正忙，无法分配新的页面来存储数据
+	DatabaseBusyError string
 }
 
 var ErrorMessage = ErrorMessageType{
@@ -29,4 +34,6 @@ var ErrorMessage = ErrorMessageType{
 	AllocMemoryTooSmallError: "分配用于缓存的内存过小",
 	BadLogFileError:          "日志文件错误",
 	BadLogCheckSumError:      "日志校验失败错误",
+	DataTooLargeError:        "Data too large",
+	DatabaseBusyError:        "Database is busy!",
 }
