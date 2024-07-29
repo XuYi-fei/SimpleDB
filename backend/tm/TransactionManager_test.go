@@ -56,10 +56,10 @@ func TestMultiThread(t *testing.T) {
 						var status int = rand.Int()%2 + 1
 						switch status {
 						case 1:
-							transactionManager.commit(transactionXid)
+							transactionManager.Commit(transactionXid)
 							break
 						case 2:
-							transactionManager.abort(transactionXid)
+							transactionManager.Abort(transactionXid)
 							break
 						}
 						transactionMap.Store(transactionXid, byte(status))
@@ -75,13 +75,13 @@ func TestMultiThread(t *testing.T) {
 
 						switch status {
 						case 0:
-							ok = transactionManager.isActive(xid)
+							ok = transactionManager.IsActive(xid)
 							break
 						case 1:
-							ok = transactionManager.isCommitted(xid)
+							ok = transactionManager.IsCommitted(xid)
 							break
 						case 2:
-							ok = transactionManager.isAborted(xid)
+							ok = transactionManager.IsAborted(xid)
 							break
 						}
 						if !ok {

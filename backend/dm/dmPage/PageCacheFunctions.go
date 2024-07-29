@@ -27,35 +27,35 @@ func (pageCacheImpl *PageCache) GetForCache(key int64) (*Page, error) {
 
 func (pageCacheImpl *PageCache) ReleaseForCache(pg *Page) {
 	if pg.IsDirty() {
-		pageCacheImpl.Flush(pg)
+		pageCacheImpl.flush(pg)
 		pg.SetDirty(false)
 	}
 }
 
 func (pageCacheImpl *PageCache) Release(page *Page) {
-	pageCacheImpl.cacheManager.Release(int64(page.GetPageNumber()))
+	pageCacheImpl.CacheManager.Release(int64(page.GetPageNumber()))
 }
 
 // NewPage 创建新页面，返回创建的页的页码
 func (pageCacheImpl *PageCache) NewPage(initData []byte) int {
 	pageNumber := atomic.AddInt32(&pageCacheImpl.pageNumbers, 1)
 	pg := NewPageImpl(int(pageNumber), initData, nil)
-	pageCacheImpl.Flush(pg)
+	pageCacheImpl.flush(pg)
 	return int(pageNumber)
 }
 
 // GetPage 获取页面
 func (pageCacheImpl *PageCache) GetPage(pageNumber int) (*Page, error) {
-	return pageCacheImpl.cacheManager.Get(int64(pageNumber))
+	return pageCacheImpl.CacheManager.Get(int64(pageNumber))
 }
 
 // FlushPage 刷新页面
 func (pageCacheImpl *PageCache) FlushPage(pg *Page) {
-	pageCacheImpl.Flush(pg)
+	pageCacheImpl.flush(pg)
 }
 
-// Flush 真正刷新
-func (pageCacheImpl *PageCache) Flush(pg *Page) {
+// flush 真正刷新
+func (pageCacheImpl *PageCache) flush(pg *Page) {
 	pageNo := (*pg).GetPageNumber()
 	offset := pageCacheImpl.pageOffset(pageNo)
 
@@ -69,21 +69,21 @@ func (pageCacheImpl *PageCache) Flush(pg *Page) {
 
 }
 
-func (pageCacheImpl *PageCache) truncateByPgNo(maxPageNumber int) {
+func (pageCacheImpl *PageCache) TruncateByPgNo(maxPageNumber int) {
 	size := pageCacheImpl.pageOffset(maxPageNumber + 1)
 	pageCacheImpl.file.Truncate(size)
 	atomic.StoreInt32(&pageCacheImpl.pageNumbers, int32(maxPageNumber))
 }
 
 func (pageCacheImpl *PageCache) Close() {
-	pageCacheImpl.cacheManager.Close()
+	pageCacheImpl.CacheManager.Close()
 	err := pageCacheImpl.file.Close()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (pageCacheImpl *PageCache) getPageNumber() int {
+func (pageCacheImpl *PageCache) GetPageNumber() int {
 	return int(atomic.LoadInt32(&pageCacheImpl.pageNumbers))
 }
 

@@ -11,7 +11,7 @@ type MockPageCache struct {
 	// 可重入锁
 	lock commons.ReentrantLock
 	// 抽象缓存类
-	//cacheManager *common.AbstractCache[*dmPage.Page]
+	//CacheManager *common.AbstractCache[*dmPage.Page]
 }
 
 func (pageCache *MockPageCache) NewPage(initData []byte) int {

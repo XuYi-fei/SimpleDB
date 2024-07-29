@@ -4,15 +4,15 @@ package tm
 type TransactionManager interface {
 	begin() int64
 
-	commit(xid int64)
+	Commit(xid int64)
 
-	abort(xid int64)
+	Abort(xid int64)
 
-	isActive(xid int64) bool
+	IsActive(xid int64) bool
 
-	isCommitted(xid int64) bool
+	IsCommitted(xid int64) bool
 
-	isAborted(xid int64) bool
+	IsAborted(xid int64) bool
 
 	close()
 }

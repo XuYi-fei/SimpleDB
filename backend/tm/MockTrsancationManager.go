@@ -14,19 +14,19 @@ func (m *MockTransactionManager) begin() int64 {
 	return 0
 }
 
-func (m *MockTransactionManager) commit(xid int64) {}
+func (m *MockTransactionManager) Commit(xid int64) {}
 
-func (m *MockTransactionManager) abort(xid int64) {}
+func (m *MockTransactionManager) Abort(xid int64) {}
 
-func (m *MockTransactionManager) isActive(xid int64) bool {
+func (m *MockTransactionManager) IsActive(xid int64) bool {
 	return false
 }
 
-func (m *MockTransactionManager) isCommitted(xid int64) bool {
+func (m *MockTransactionManager) IsCommitted(xid int64) bool {
 	return false
 }
 
-func (m *MockTransactionManager) isAborted(xid int64) bool {
+func (m *MockTransactionManager) IsAborted(xid int64) bool {
 	return false
 }
 

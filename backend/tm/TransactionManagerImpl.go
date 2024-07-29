@@ -148,18 +148,18 @@ func (manager *TransactionManagerImpl) begin() int64 {
 	return xid
 }
 
-// commit 提交一个事务
-func (manager *TransactionManagerImpl) commit(xid int64) {
+// Commit 提交一个事务
+func (manager *TransactionManagerImpl) Commit(xid int64) {
 	manager.updateXID(xid, FIELD_TRAN_COMMITTED)
 }
 
-// abort 终止一个事务
-func (manager *TransactionManagerImpl) abort(xid int64) {
+// Abort 终止一个事务
+func (manager *TransactionManagerImpl) Abort(xid int64) {
 	manager.updateXID(xid, FIELD_TRAN_ABORTED)
 }
 
-// checkXID 检查事务的状态
-func (manager *TransactionManagerImpl) checkXID(xid int64, status byte) bool {
+// CheckXID 检查事务的状态
+func (manager *TransactionManagerImpl) CheckXID(xid int64, status byte) bool {
 	offset := manager.getXidPosition(xid)
 	// 创建一个长度为8的字节数组
 	buf := make([]byte, LEN_XID_FIELD_SIZE)
@@ -172,28 +172,28 @@ func (manager *TransactionManagerImpl) checkXID(xid int64, status byte) bool {
 	return buf[0] == status
 }
 
-// isActive 判断事务是否处于活动状态
-func (manager *TransactionManagerImpl) isActive(xid int64) bool {
+// IsActive 判断事务是否处于活动状态
+func (manager *TransactionManagerImpl) IsActive(xid int64) bool {
 	if xid == SUPER_XID {
 		return false
 	}
-	return manager.checkXID(xid, FIELD_TRAN_ACTIVE)
+	return manager.CheckXID(xid, FIELD_TRAN_ACTIVE)
 }
 
-// isCommitted 判断事务是否处于提交状态
-func (manager *TransactionManagerImpl) isCommitted(xid int64) bool {
+// IsCommitted 判断事务是否处于提交状态
+func (manager *TransactionManagerImpl) IsCommitted(xid int64) bool {
 	if xid == SUPER_XID {
 		return true
 	}
-	return manager.checkXID(xid, FIELD_TRAN_COMMITTED)
+	return manager.CheckXID(xid, FIELD_TRAN_COMMITTED)
 }
 
-// isAborted 判断事务是否处于终止状态
-func (manager *TransactionManagerImpl) isAborted(xid int64) bool {
+// IsAborted 判断事务是否处于终止状态
+func (manager *TransactionManagerImpl) IsAborted(xid int64) bool {
 	if xid == SUPER_XID {
 		return false
 	}
-	return manager.checkXID(xid, FIELD_TRAN_ABORTED)
+	return manager.CheckXID(xid, FIELD_TRAN_ABORTED)
 }
 
 // close 关闭事务管理器
