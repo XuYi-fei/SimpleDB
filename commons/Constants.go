@@ -24,6 +24,15 @@ type ErrorMessageType struct {
 	DataTooLargeError string
 	// 数据库正忙，无法分配新的页面来存储数据
 	DatabaseBusyError string
+
+	// 死锁异常
+	DeadLockError string
+
+	// Entry为空异常
+	NullEntryError string
+
+	// 并发更新错误
+	ConcurrentUpdateError string
 }
 
 var ErrorMessage = ErrorMessageType{
@@ -36,4 +45,7 @@ var ErrorMessage = ErrorMessageType{
 	BadLogCheckSumError:      "日志校验失败错误",
 	DataTooLargeError:        "Data too large",
 	DatabaseBusyError:        "Database is busy!",
+	DeadLockError:            "Deadlock detected",
+	NullEntryError:           "Entry is null",
+	ConcurrentUpdateError:    "Concurrent update error",
 }

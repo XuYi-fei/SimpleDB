@@ -47,7 +47,7 @@ func TestMultiThread(t *testing.T) {
 					// 判断是否有事务在进行中（未提交或未终止）
 					if !isTrans {
 						// 开启事务获得分配得到的事务id
-						xid := transactionManager.begin()
+						xid := transactionManager.Begin()
 						transactionMap.Store(xid, byte(0))
 						transactionCnt++
 						transactionXid = xid

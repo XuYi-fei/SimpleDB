@@ -2,7 +2,7 @@ package tm
 
 // TransactionManager interface
 type TransactionManager interface {
-	begin() int64
+	Begin() int64
 
 	Commit(xid int64)
 

@@ -10,7 +10,7 @@ type MockTransactionManager struct {
 	Lock           sync.Mutex
 }
 
-func (m *MockTransactionManager) begin() int64 {
+func (m *MockTransactionManager) Begin() int64 {
 	return 0
 }
 

@@ -137,8 +137,8 @@ func (manager *TransactionManagerImpl) incrXIDCounter() {
 	}
 }
 
-// begin 开启一个事务
-func (manager *TransactionManagerImpl) begin() int64 {
+// Begin 开启一个事务
+func (manager *TransactionManagerImpl) Begin() int64 {
 	manager.counterLock.Lock()
 
 	xid := manager.xidCounter + 1
