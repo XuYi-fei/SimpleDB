@@ -33,6 +33,12 @@ type ErrorMessageType struct {
 
 	// 并发更新错误
 	ConcurrentUpdateError string
+
+	// 语句解析错误
+	InvalidCommandError string
+
+	// 表中无索引
+	TableNoIndexError string
 }
 
 var ErrorMessage = ErrorMessageType{
@@ -48,4 +54,6 @@ var ErrorMessage = ErrorMessageType{
 	DeadLockError:            "Deadlock detected",
 	NullEntryError:           "Entry is null",
 	ConcurrentUpdateError:    "Concurrent update error",
+	InvalidCommandError:      "Invalid command",
+	TableNoIndexError:        "Table has no index",
 }
