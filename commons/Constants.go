@@ -39,6 +39,25 @@ type ErrorMessageType struct {
 
 	// 表中无索引
 	TableNoIndexError string
+
+	// 字段类型无效错误
+	InvalidFieldTypeError string
+
+	// 查询的条件中包含的字段不带索引
+	FieldNotIndexedError string
+	// 字段不存在
+	FieldNotFoundError string
+
+	// 无效逻辑运算符错误
+	InvalidLogOpError string
+
+	// 无效值错误
+	InvalidValuesError string
+
+	// 数据表重复错误
+	DuplicatedTableError string
+	// 数据表不存在错误
+	TableNotFoundError string
 }
 
 var ErrorMessage = ErrorMessageType{
@@ -56,4 +75,11 @@ var ErrorMessage = ErrorMessageType{
 	ConcurrentUpdateError:    "Concurrent update error",
 	InvalidCommandError:      "Invalid command",
 	TableNoIndexError:        "Table has no index",
+	InvalidFieldTypeError:    "Invalid field type",
+	FieldNotIndexedError:     "Field not indexed",
+	FieldNotFoundError:       "Field not found",
+	InvalidLogOpError:        "Invalid logical operator",
+	InvalidValuesError:       "Invalid values",
+	DuplicatedTableError:     "Duplicated table",
+	TableNotFoundError:       "Table not found",
 }

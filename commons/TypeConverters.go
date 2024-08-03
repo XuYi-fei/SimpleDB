@@ -1,5 +1,7 @@
 package commons
 
+import "encoding/binary"
+
 func BytesToInt32(b []byte) int32 {
 	return int32(b[0]) | int32(b[1])<<8 | int32(b[2])<<16 | int32(b[3])<<24
 }
@@ -30,4 +32,29 @@ func BytesCompare(b1, b2 []byte) bool {
 		}
 	}
 	return true
+}
+
+type ParseStringResult struct {
+	Str  string
+	Next int32
+}
+
+// ParseString 从字节数组中解析字符串，格式为：[StringLength][StringData]，前者4字节
+func ParseString(raw []byte) ParseStringResult {
+	length := binary.BigEndian.Uint32(raw[:4])
+	str := string(raw[4 : 4+length])
+	return ParseStringResult{
+		Str:  str,
+		Next: 4 + int32(length),
+	}
+}
+
+// Str2Uid 根据key的字符串，生成一个Uid
+func Str2Uid(key string) int64 {
+	var seed int64 = 13331
+	var result int64 = 0
+	for _, c := range key {
+		result = result*seed + int64(c)
+	}
+	return result
 }
