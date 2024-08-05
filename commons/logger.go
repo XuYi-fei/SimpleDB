@@ -12,7 +12,7 @@ var (
 	Logger      *logrus.Logger
 	LoggerLevel = logrus.DebugLevel
 	// ProjectRoot 项目根目录
-	ProjectRoot = "dbofmine"
+	ProjectRoot = "SimpleDB"
 )
 
 // ContextHook 定义一个结构体实现 logrus.Hook 接口

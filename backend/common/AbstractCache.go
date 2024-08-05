@@ -1,7 +1,7 @@
 package common
 
 import (
-	"dbofmine/commons"
+	"SimpleDB/commons"
 	"errors"
 	"time"
 )

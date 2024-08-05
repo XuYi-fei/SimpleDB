@@ -1,8 +1,8 @@
 package main
 
 import (
-	"dbofmine/client"
-	"dbofmine/transport"
+	"SimpleDB/client"
+	"SimpleDB/transport"
 	"fmt"
 	"net"
 )

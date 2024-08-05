@@ -1,7 +1,7 @@
 package dmPage
 
 import (
-	"dbofmine/backend/dm/constants"
+	"SimpleDB/backend/dm/constants"
 	"sync/atomic"
 )
 

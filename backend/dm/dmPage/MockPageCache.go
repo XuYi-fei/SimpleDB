@@ -1,7 +1,7 @@
 package dmPage
 
 import (
-	"dbofmine/commons"
+	"SimpleDB/commons"
 )
 
 type MockPageCache struct {

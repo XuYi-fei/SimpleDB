@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"dbofmine/backend/dm/dmPage"
+	"SimpleDB/backend/dm/dmPage"
 	"sync"
 )
 

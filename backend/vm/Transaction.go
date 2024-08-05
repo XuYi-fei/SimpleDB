@@ -1,6 +1,6 @@
 package vm
 
-import "dbofmine/backend/tm"
+import "SimpleDB/backend/tm"
 
 // Transaction 对一个事务的抽象
 type Transaction struct {

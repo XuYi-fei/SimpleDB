@@ -1,10 +1,10 @@
 package tests
 
 import (
-	"dbofmine/backend/dm/constants"
-	"dbofmine/backend/dm/dmPage"
-	"dbofmine/backend/utils"
-	"dbofmine/commons"
+	"SimpleDB/backend/dm/constants"
+	"SimpleDB/backend/dm/dmPage"
+	"SimpleDB/backend/utils"
+	"SimpleDB/commons"
 	"github.com/sirupsen/logrus"
 	"os"
 	"sync"
@@ -19,7 +19,7 @@ var (
 
 func TestPageCacheImpl(t *testing.T) {
 	t.Log("TestPageCacheImpl")
-	pc := dmPage.CreatePageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPage", int64(constants.PageSize*50))
+	pc := dmPage.CreatePageCacheImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/dmPage", int64(constants.PageSize*50))
 	for i := 0; i < 100; i++ {
 		tmp := make([]byte, constants.PageSize)
 		tmp[0] = byte(i)
@@ -34,7 +34,7 @@ func TestPageCacheImpl(t *testing.T) {
 	}
 	pc.Close()
 
-	pc = dmPage.OpenPageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPage", int64(constants.PageSize*50))
+	pc = dmPage.OpenPageCacheImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/dmPage", int64(constants.PageSize*50))
 	for i := 1; i <= 100; i++ {
 		page, _ := pc.GetPage(i)
 		if page.GetData()[0] != byte(i-1) {
@@ -44,12 +44,12 @@ func TestPageCacheImpl(t *testing.T) {
 	}
 	pc.Close()
 
-	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPage" + dmPage.DB_SUFFIX)
+	os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/dmPage" + dmPage.DB_SUFFIX)
 }
 
 func TestPageCacheMultiSimple(t *testing.T) {
 	logger := commons.NewLoggerByLevel(logrus.InfoLevel)
-	pc1 := dmPage.CreatePageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheSimpleTest", int64(constants.PageSize*50))
+	pc1 := dmPage.CreatePageCacheImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/dmPageCacheSimpleTest", int64(constants.PageSize*50))
 
 	wg := sync.WaitGroup{}
 	wg.Add(200)
@@ -102,13 +102,13 @@ func TestPageCacheMultiSimple(t *testing.T) {
 	wg.Wait()
 	pc1.Close()
 	//commons.Logger.Infof("zeroCnt: %d, oneCnt: %d", zeroCnt, oneCnt)
-	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheSimpleTest" + dmPage.DB_SUFFIX)
+	os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/dmPageCacheSimpleTest" + dmPage.DB_SUFFIX)
 
 }
 
 func TestPageCacheMulti(t *testing.T) {
-	pc2 := dmPage.CreatePageCacheImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheMultiTest", int64(constants.PageSize*50))
-	defer os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/dmPageCacheMultiTest" + dmPage.DB_SUFFIX)
+	pc2 := dmPage.CreatePageCacheImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/dmPageCacheMultiTest", int64(constants.PageSize*50))
+	defer os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/dmPageCacheMultiTest" + dmPage.DB_SUFFIX)
 	mpc := &dmPage.MockPageCache{
 		Cache: make(map[int]*dmPage.MockPage),
 	}

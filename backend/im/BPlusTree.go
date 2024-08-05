@@ -1,10 +1,10 @@
 package im
 
 import (
+	"SimpleDB/backend/dm"
+	"SimpleDB/backend/tm"
+	"SimpleDB/commons"
 	"bytes"
-	"dbofmine/backend/dm"
-	"dbofmine/backend/tm"
-	"dbofmine/commons"
 	"encoding/binary"
 	"fmt"
 	"sync"

@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"dbofmine/backend/vm"
-	"dbofmine/commons"
+	"SimpleDB/backend/vm"
+	"SimpleDB/commons"
 	"testing"
 )
 

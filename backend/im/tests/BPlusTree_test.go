@@ -1,10 +1,10 @@
 package tests
 
 import (
-	"dbofmine/backend/dm"
-	"dbofmine/backend/dm/constants"
-	"dbofmine/backend/im"
-	"dbofmine/backend/tm"
+	"SimpleDB/backend/dm"
+	"SimpleDB/backend/dm/constants"
+	"SimpleDB/backend/im"
+	"SimpleDB/backend/tm"
 	"fmt"
 	"os"
 	"testing"
@@ -12,8 +12,8 @@ import (
 
 func TestTreeSingle(t *testing.T) {
 	t.Log("TestB+TreeSingle")
-	tm, _ := tm.CreateTransactionManagerImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/im/TestTreeSingle")
-	dm := dm.CreateDataManager("/Users/xuyifei/repos/dbofmine/data/test/backend/im/TestTreeSingle", int64(constants.PageSize*10), tm)
+	tm, _ := tm.CreateTransactionManagerImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/im/TestTreeSingle")
+	dm := dm.CreateDataManager("/Users/xuyifei/repos/SimpleDB/data/test/backend/im/TestTreeSingle", int64(constants.PageSize*10), tm)
 
 	root, _ := im.CreateBPlusTree(dm)
 	tree, _ := im.LoadBPlusTree(root, dm)
@@ -35,8 +35,8 @@ func TestTreeSingle(t *testing.T) {
 		}
 	}
 
-	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/im/TestTreeSingle.db")
-	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/im/TestTreeSingle.xid")
-	os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/im/TestTreeSingle.log")
+	os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/im/TestTreeSingle.db")
+	os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/im/TestTreeSingle.xid")
+	os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/im/TestTreeSingle.log")
 
 }

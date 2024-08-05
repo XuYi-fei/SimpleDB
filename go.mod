@@ -1,4 +1,4 @@
-module dbofmine
+module SimpleDB
 
 go 1.20
 

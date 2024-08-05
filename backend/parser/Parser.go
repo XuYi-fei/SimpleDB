@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"dbofmine/backend/parser/statement"
-	"dbofmine/commons"
+	"SimpleDB/backend/parser/statement"
+	"SimpleDB/commons"
 	"errors"
 )
 

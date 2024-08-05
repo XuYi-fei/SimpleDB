@@ -1,9 +1,9 @@
 package im
 
 import (
+	"SimpleDB/backend/dm"
+	"SimpleDB/backend/tm"
 	"bytes"
-	"dbofmine/backend/dm"
-	"dbofmine/backend/tm"
 	"encoding/binary"
 	"errors"
 	"fmt"

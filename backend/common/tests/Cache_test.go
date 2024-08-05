@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"dbofmine/backend/common"
-	"dbofmine/commons"
+	"SimpleDB/backend/common"
+	"SimpleDB/commons"
 	"math/rand"
 	"sync"
 	"testing"

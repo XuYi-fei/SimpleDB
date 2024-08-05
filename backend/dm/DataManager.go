@@ -1,13 +1,13 @@
 package dm
 
 import (
-	"dbofmine/backend/common"
-	"dbofmine/backend/dm/dmPage"
-	"dbofmine/backend/dm/dmPageIndex"
-	"dbofmine/backend/dm/logger"
-	"dbofmine/backend/tm"
-	"dbofmine/backend/utils"
-	"dbofmine/commons"
+	"SimpleDB/backend/common"
+	"SimpleDB/backend/dm/dmPage"
+	"SimpleDB/backend/dm/dmPageIndex"
+	"SimpleDB/backend/dm/logger"
+	"SimpleDB/backend/tm"
+	"SimpleDB/backend/utils"
+	"SimpleDB/commons"
 	"errors"
 )
 

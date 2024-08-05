@@ -1,8 +1,8 @@
 package tm
 
 import (
-	"dbofmine/backend/utils"
-	"dbofmine/commons"
+	"SimpleDB/backend/utils"
+	"SimpleDB/commons"
 	"encoding/binary"
 	"os"
 	"sync"

@@ -1,8 +1,8 @@
 package vm
 
 import (
-	"dbofmine/backend/dm"
-	"dbofmine/commons"
+	"SimpleDB/backend/dm"
+	"SimpleDB/commons"
 	"encoding/binary"
 )
 

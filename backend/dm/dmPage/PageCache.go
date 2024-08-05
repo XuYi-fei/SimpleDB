@@ -1,10 +1,10 @@
 package dmPage
 
 import (
-	"dbofmine/backend/common"
-	"dbofmine/backend/dm/constants"
-	"dbofmine/backend/utils"
-	"dbofmine/commons"
+	"SimpleDB/backend/common"
+	"SimpleDB/backend/dm/constants"
+	"SimpleDB/backend/utils"
+	"SimpleDB/commons"
 	"os"
 )
 

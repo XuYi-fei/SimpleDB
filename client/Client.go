@@ -1,7 +1,7 @@
 package client
 
 import (
-	"dbofmine/transport"
+	"SimpleDB/transport"
 )
 
 type Client struct {

@@ -1,7 +1,7 @@
 package tm
 
 import (
-	"dbofmine/commons"
+	"SimpleDB/commons"
 	"sync"
 )
 

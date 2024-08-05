@@ -1,6 +1,6 @@
 package client
 
-import "dbofmine/transport"
+import "SimpleDB/transport"
 
 // RoundTripper 用于发送请求并接受响应
 type RoundTripper struct {

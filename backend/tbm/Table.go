@@ -1,9 +1,9 @@
 package tbm
 
 import (
-	"dbofmine/backend/parser/statement"
-	"dbofmine/backend/tm"
-	"dbofmine/commons"
+	"SimpleDB/backend/parser/statement"
+	"SimpleDB/backend/tm"
+	"SimpleDB/commons"
 	"encoding/binary"
 	"errors"
 	"math"

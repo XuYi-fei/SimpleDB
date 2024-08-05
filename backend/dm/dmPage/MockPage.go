@@ -1,6 +1,6 @@
 package dmPage
 
-import "dbofmine/commons"
+import "SimpleDB/commons"
 
 type MockPage struct {
 	pageNumber int

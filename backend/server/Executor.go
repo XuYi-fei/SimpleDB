@@ -1,10 +1,10 @@
 package server
 
 import (
-	"dbofmine/backend/parser"
-	"dbofmine/backend/parser/statement"
-	"dbofmine/backend/tbm"
-	"dbofmine/commons"
+	"SimpleDB/backend/parser"
+	"SimpleDB/backend/parser/statement"
+	"SimpleDB/backend/tbm"
+	"SimpleDB/commons"
 	"errors"
 )
 

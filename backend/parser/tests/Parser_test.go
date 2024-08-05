@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"dbofmine/backend/parser"
-	"dbofmine/backend/parser/statement"
+	"SimpleDB/backend/parser"
+	"SimpleDB/backend/parser/statement"
 	"testing"
 )
 

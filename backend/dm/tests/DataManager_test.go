@@ -1,11 +1,11 @@
 package tests
 
 import (
-	"dbofmine/backend/dm"
-	"dbofmine/backend/dm/constants"
-	"dbofmine/backend/tm"
-	"dbofmine/backend/utils"
-	"dbofmine/commons"
+	"SimpleDB/backend/dm"
+	"SimpleDB/backend/dm/constants"
+	"SimpleDB/backend/tm"
+	"SimpleDB/backend/utils"
+	"SimpleDB/commons"
 	"fmt"
 	"math"
 	"os"
@@ -26,12 +26,12 @@ func initUids() {
 
 func TestDataManagerSingle(t *testing.T) {
 	t.Cleanup(func() {
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTSingle.db")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTSingle.log")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTSingle.xid")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTSingle.db")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTSingle.log")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTSingle.xid")
 	})
-	tm0, _ := tm.CreateTransactionManagerImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTSingle")
-	dm0 := dm.CreateDataManager("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTSingle", int64(constants.PageSize*10), tm0)
+	tm0, _ := tm.CreateTransactionManagerImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTSingle")
+	dm0 := dm.CreateDataManager("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTSingle", int64(constants.PageSize*10), tm0)
 	dm1 := NewMockDataManager()
 
 	taskNum := 500
@@ -115,19 +115,19 @@ func TestDataManagerSingle(t *testing.T) {
 func TestDataManagerMulti(t *testing.T) {
 
 	t.Cleanup(func() {
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTDMMulti.db")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTDMMulti.log")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTDMMulti.xid")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTDMMulti.db")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTDMMulti.log")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTDMMulti.xid")
 	})
 
 	defer func() {
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTDMMulti.db")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTDMMulti.log")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTDMMulti.xid")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTDMMulti.db")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTDMMulti.log")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTDMMulti.xid")
 	}()
 
-	tm0, _ := tm.CreateTransactionManagerImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTDMMulti")
-	dm0 := dm.CreateDataManager("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TESTDMMulti", int64(constants.PageSize*50), tm0)
+	tm0, _ := tm.CreateTransactionManagerImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTDMMulti")
+	dm0 := dm.CreateDataManager("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TESTDMMulti", int64(constants.PageSize*50), tm0)
 	dm1 := NewMockDataManager()
 
 	taskNum := 100
@@ -223,19 +223,19 @@ func TestDataManagerMulti(t *testing.T) {
 func TestDataManagerRecoverSimple(t *testing.T) {
 
 	t.Cleanup(func() {
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple.db")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple.log")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple.xid")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple.db")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple.log")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple.xid")
 	})
 
 	defer func() {
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple.db")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple.log")
-		os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple.xid")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple.db")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple.log")
+		os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple.xid")
 	}()
 
-	tm0, _ := tm.CreateTransactionManagerImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple")
-	dm0 := dm.CreateDataManager("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple", int64(constants.PageSize*50), tm0)
+	tm0, _ := tm.CreateTransactionManagerImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple")
+	dm0 := dm.CreateDataManager("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple", int64(constants.PageSize*50), tm0)
 	dm1 := NewMockDataManager()
 
 	dm0.Close()
@@ -246,7 +246,7 @@ func TestDataManagerRecoverSimple(t *testing.T) {
 	insertRatio := 50
 
 	for j := 0; j < 8; j++ {
-		dm0 = dm.OpenDataManager("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/TestRecoverSimple", int64(constants.PageSize*30), tm0)
+		dm0 = dm.OpenDataManager("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/TestRecoverSimple", int64(constants.PageSize*30), tm0)
 		wg := sync.WaitGroup{}
 		wg.Add(10)
 		for k := 0; k < 10; k++ {

@@ -1,10 +1,10 @@
 package dm
 
 import (
-	"dbofmine/backend/dm/dmPage"
-	"dbofmine/backend/dm/logger"
-	"dbofmine/backend/tm"
-	"dbofmine/commons"
+	"SimpleDB/backend/dm/dmPage"
+	"SimpleDB/backend/dm/logger"
+	"SimpleDB/backend/tm"
+	"SimpleDB/commons"
 	"encoding/binary"
 )
 

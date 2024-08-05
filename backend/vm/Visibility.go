@@ -1,6 +1,6 @@
 package vm
 
-import "dbofmine/backend/tm"
+import "SimpleDB/backend/tm"
 
 // IsVersionSkip 判断是否发生了MVCC中的版本跳跃问题
 func IsVersionSkip(tm *tm.TransactionManagerImpl, t *Transaction, e *Entry) bool {

@@ -1,7 +1,7 @@
 package vm
 
 import (
-	"dbofmine/commons"
+	"SimpleDB/commons"
 	"errors"
 	"sync"
 )

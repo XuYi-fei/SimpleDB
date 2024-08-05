@@ -1,11 +1,11 @@
 package main
 
 import (
-	"dbofmine/backend/dm"
-	"dbofmine/backend/server"
-	"dbofmine/backend/tbm"
-	"dbofmine/backend/tm"
-	"dbofmine/backend/vm"
+	"SimpleDB/backend/dm"
+	"SimpleDB/backend/server"
+	"SimpleDB/backend/tbm"
+	"SimpleDB/backend/tm"
+	"SimpleDB/backend/vm"
 	"flag"
 	"fmt"
 	"strconv"

@@ -1,8 +1,8 @@
 package tm
 
 import (
-	"dbofmine/backend/utils"
-	"dbofmine/commons"
+	"SimpleDB/backend/utils"
+	"SimpleDB/commons"
 	"math"
 	"math/rand"
 	"os"
@@ -32,9 +32,9 @@ func TestMultiThread(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(workerNum)
 
-	transactionManager, _ := CreateTransactionManagerImpl("/Users/xuyifei/repos/dbofmine/data/test/backend/tm/tranmger_test")
+	transactionManager, _ := CreateTransactionManagerImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/tm/tranmger_test")
 
-	defer os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/tm/tranmger_test" + XID_SUFFIX)
+	defer os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/tm/tranmger_test" + XID_SUFFIX)
 
 	for i := 0; i < workerNum; i++ {
 		go func() {

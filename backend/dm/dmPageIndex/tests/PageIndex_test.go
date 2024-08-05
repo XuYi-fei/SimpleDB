@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"dbofmine/backend/dm/constants"
-	"dbofmine/backend/dm/dmPageIndex"
+	"SimpleDB/backend/dm/constants"
+	"SimpleDB/backend/dm/dmPageIndex"
 	"testing"
 )
 

@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"dbofmine/backend/utils"
-	"dbofmine/commons"
+	"SimpleDB/backend/utils"
+	"SimpleDB/commons"
 	"os"
 )
 

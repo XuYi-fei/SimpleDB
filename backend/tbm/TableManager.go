@@ -1,10 +1,10 @@
 package tbm
 
 import (
-	"dbofmine/backend/dm"
-	"dbofmine/backend/parser/statement"
-	"dbofmine/backend/vm"
-	"dbofmine/commons"
+	"SimpleDB/backend/dm"
+	"SimpleDB/backend/parser/statement"
+	"SimpleDB/backend/vm"
+	"SimpleDB/commons"
 	"encoding/binary"
 	"errors"
 	"strconv"

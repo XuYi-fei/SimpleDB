@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"dbofmine/transport"
+	"SimpleDB/transport"
 	"net"
 	"testing"
 )

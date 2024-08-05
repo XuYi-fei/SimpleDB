@@ -1,14 +1,14 @@
 package tests
 
 import (
-	logger2 "dbofmine/backend/dm/logger"
+	logger2 "SimpleDB/backend/dm/logger"
 	"os"
 	"testing"
 )
 
 func TestLogger(t *testing.T) {
 	t.Log("TestLogger")
-	logger := logger2.CreateLogger("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/logger")
+	logger := logger2.CreateLogger("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/logger")
 	logger.Log([]byte("aaa"))
 	logger.Log([]byte("bbb"))
 	logger.Log([]byte("ccc"))
@@ -16,10 +16,10 @@ func TestLogger(t *testing.T) {
 	logger.Log([]byte("eee"))
 	logger.Close()
 
-	logger = logger2.OpenLogger("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/logger")
+	logger = logger2.OpenLogger("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/logger")
 	logger.Rewind()
 
-	defer os.RemoveAll("/Users/xuyifei/repos/dbofmine/data/test/backend/dm/logger" + logger2.LogSuffix)
+	defer os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/dm/logger" + logger2.LogSuffix)
 
 	log := logger.Next()
 	if log == nil {

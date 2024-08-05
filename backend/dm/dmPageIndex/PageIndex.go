@@ -1,8 +1,8 @@
 package dmPageIndex
 
 import (
-	"dbofmine/backend/dm/constants"
-	"dbofmine/commons"
+	"SimpleDB/backend/dm/constants"
+	"SimpleDB/commons"
 )
 
 var (

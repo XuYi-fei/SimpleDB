@@ -1,8 +1,8 @@
 package dm
 
 import (
-	"dbofmine/backend/dm/dmPage"
-	"dbofmine/backend/utils"
+	"SimpleDB/backend/dm/dmPage"
+	"SimpleDB/backend/utils"
 	"encoding/binary"
 	"sync"
 )

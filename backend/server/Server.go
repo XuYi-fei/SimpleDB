@@ -1,8 +1,8 @@
 package server
 
 import (
-	"dbofmine/backend/tbm"
-	"dbofmine/transport"
+	"SimpleDB/backend/tbm"
+	"SimpleDB/transport"
 	"fmt"
 	"io"
 	"net"

@@ -1,8 +1,8 @@
 package dmPage
 
 import (
-	"dbofmine/backend/dm/constants"
-	"dbofmine/backend/utils"
+	"SimpleDB/backend/dm/constants"
+	"SimpleDB/backend/utils"
 )
 
 var (

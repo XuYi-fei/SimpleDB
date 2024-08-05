@@ -1,10 +1,10 @@
 package vm
 
 import (
-	"dbofmine/backend/common"
-	"dbofmine/backend/dm"
-	"dbofmine/backend/tm"
-	"dbofmine/commons"
+	"SimpleDB/backend/common"
+	"SimpleDB/backend/dm"
+	"SimpleDB/backend/tm"
+	"SimpleDB/commons"
 	"errors"
 	"sync"
 )

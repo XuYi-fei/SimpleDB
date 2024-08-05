@@ -1,8 +1,8 @@
 package parser
 
 import (
+	"SimpleDB/commons"
 	"bytes"
-	"dbofmine/commons"
 	"errors"
 )
 
