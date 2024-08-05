@@ -70,6 +70,9 @@ func (entry *Entry) SetXMax(xid int64) {
 	entry.dataItem.Before()
 	// 生成一个修改日志
 	defer entry.dataItem.After(xid)
+
+	sa := entry.dataItem.Data()
+	copy(sa[EntryOffsetXMAX:EntryOffsetData], commons.Int64ToBytes(xid))
 }
 
 func (entry *Entry) GetUid() int64 {

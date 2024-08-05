@@ -119,7 +119,7 @@ func (table *Table) parseSelf(raw []byte) *Table {
 // persistSelf 将Table对象的状态持久化到存储系统中
 func (table *Table) persistSelf(xid int64) (*Table, error) {
 	// 将表名转换为字节数组
-	nameBytes := []byte(table.Name)
+	nameBytes := commons.String2Bytes(table.Name)
 	// 将下一个uid转换为字节数组
 	nextUidBytes := make([]byte, 8)
 	binary.BigEndian.PutUint64(nextUidBytes, uint64(table.NextUid))
@@ -421,7 +421,7 @@ func (table *Table) string2Entry(values []string) (map[string]interface{}, error
 }
 
 func (table *Table) printEntry(entry map[string]interface{}) string {
-	var str string = ""
+	var str string = "["
 	for i, _ := range table.Fields {
 		field := table.Fields[i]
 		str += field.PrintValue(entry[field.FieldName])

@@ -2,6 +2,7 @@ package tbm
 
 import (
 	"dbofmine/backend/utils"
+	"fmt"
 	"os"
 )
 
@@ -30,7 +31,7 @@ func (b *Booter) Load() []byte {
 	// 创建一个大小为文件大小的字节数组
 	data := make([]byte, fileSize)
 	// 读取文件的所有字节到data中
-	if _, err := b.file.Read(data); err != nil {
+	if _, err := b.file.ReadAt(data, 0); err != nil {
 		panic(err)
 	}
 	return data
@@ -40,7 +41,6 @@ func (b *Booter) Load() []byte {
 func (b *Booter) Update(data []byte) {
 	// 创建一个新的临时文件
 	tmpFile, err := os.Create(b.Path + BooterTmpSuffix)
-	defer tmpFile.Close()
 	if err != nil {
 		panic(err)
 	}
@@ -71,8 +71,14 @@ func (b *Booter) Update(data []byte) {
 		panic(err)
 	}
 
+	// 重新打开目标文件
+	file, err := os.OpenFile(b.Path+BooterSuffix, os.O_RDWR, 0666)
+	if err != nil {
+		panic(fmt.Sprintf("Failed to open file: %v", err))
+	}
+
 	// 更新file字段为新的启动信息文件
-	b.file = tmpFile
+	b.file = file
 	// 检查新的启动信息文件是否可读写，如果不可读写，则抛出异常
 	if err := b.file.Chmod(0666); err != nil {
 		panic(err)

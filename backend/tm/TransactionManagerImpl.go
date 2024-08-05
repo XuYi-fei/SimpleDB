@@ -38,7 +38,7 @@ type TransactionManagerImpl struct {
 func CreateTransactionManagerImpl(path string) (*TransactionManagerImpl, error) {
 	var transactionManager *TransactionManagerImpl
 	// 如果文件已经存在那么直接报错
-	if utils.FileExists(path) {
+	if utils.FileExists(path + XID_SUFFIX) {
 		panic(commons.ErrorMessage.FileExistError)
 	}
 	// 尝试打开文件
@@ -65,11 +65,11 @@ func CreateTransactionManagerImpl(path string) (*TransactionManagerImpl, error) 
 
 func OpenTransactionManagerImpl(path string) (*TransactionManagerImpl, error) {
 	// 如果文件不存在那么直接报错
-	if !utils.FileExists(path) {
+	if !utils.FileExists(path + XID_SUFFIX) {
 		panic(commons.ErrorMessage.FileExistError)
 	}
 	// 尝试打开文件
-	file, err := os.OpenFile(path, os.O_RDWR, 0755)
+	file, err := os.OpenFile(path+XID_SUFFIX, os.O_RDWR, 0755)
 	if err != nil {
 		return nil, err
 	} else {
@@ -196,8 +196,8 @@ func (manager *TransactionManagerImpl) IsAborted(xid int64) bool {
 	return manager.CheckXID(xid, FIELD_TRAN_ABORTED)
 }
 
-// close 关闭事务管理器
-func (manager *TransactionManagerImpl) close() {
+// Close 关闭事务管理器
+func (manager *TransactionManagerImpl) Close() {
 	err := manager.file.Close()
 	if err != nil {
 		panic(err)

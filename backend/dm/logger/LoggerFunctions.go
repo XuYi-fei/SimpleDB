@@ -29,10 +29,13 @@ func (logger *DBLogger) init() {
 	checkSum := int32(binary.BigEndian.Uint32(raw))
 	logger.fileSize = size
 	logger.xCheckSum = checkSum
+
+	logger.checkAndRemoveTail()
 }
 
 // 对校验和进行检查并且移除后面的截断部分
 func (logger *DBLogger) checkAndRemoveTail() {
+	logger.Rewind()
 
 	var xCheck int32 = 0
 	// 从头开始读取，计算校验和
@@ -41,7 +44,7 @@ func (logger *DBLogger) checkAndRemoveTail() {
 		if log == nil {
 			break
 		}
-		xCheck = logger.calCheckSum(xCheck, log[OffsetDataSize:])
+		xCheck = logger.calCheckSum(xCheck, log)
 	}
 	if xCheck != logger.xCheckSum {
 		panic(errors.New(commons.ErrorMessage.BadLogFileError))
@@ -65,7 +68,7 @@ func (logger *DBLogger) checkAndRemoveTail() {
 // calCheckSum 计算校验和
 func (logger *DBLogger) calCheckSum(xCheck int32, log []byte) int32 {
 	for _, b := range log {
-		xCheck = xCheck*SEED + int32(b)
+		xCheck = xCheck*SEED + int32(int8(b))
 	}
 	return xCheck
 }

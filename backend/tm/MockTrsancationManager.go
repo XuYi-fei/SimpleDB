@@ -30,4 +30,4 @@ func (m *MockTransactionManager) IsAborted(xid int64) bool {
 	return false
 }
 
-func (m *MockTransactionManager) close() {}
+func (m *MockTransactionManager) Close() {}

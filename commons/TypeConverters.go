@@ -34,6 +34,19 @@ func BytesCompare(b1, b2 []byte) bool {
 	return true
 }
 
+// String2Bytes 将字符串转换为字节数组，格式为：[StringLength][StringData]，前者4字节
+func String2Bytes(str string) []byte {
+	length := make([]byte, 4)
+	binary.BigEndian.PutUint32(length, uint32(len(str)))
+	return BytesConcat(length, []byte(str))
+}
+
+func Int64ToBytes(i int64) []byte {
+	raw := make([]byte, 8)
+	binary.BigEndian.PutUint64(raw, uint64(i))
+	return raw
+}
+
 type ParseStringResult struct {
 	Str  string
 	Next int32

@@ -36,7 +36,7 @@ type Field struct {
 /**
  * 创建一个新的Field对象
  * tb        表对象，Field对象所属的表
- * xid       事务ID
+ * Xid       事务ID
  * fieldName 字段名
  * fieldType 字段类型
  * indexed   是否创建索引
@@ -128,6 +128,7 @@ func (field *Field) parseSelf(raw []byte) *Field {
 			panic(err)
 		}
 		field.bt = bt
+		field.index = int64(index)
 	}
 	return field
 }
@@ -135,16 +136,16 @@ func (field *Field) parseSelf(raw []byte) *Field {
 // persistSelf 将当前Field对象持久化到存储中
 func (field *Field) persistSelf(xid int64) error {
 	// 将字段名转换为字节数组
-	fieldNameBytes := []byte(field.FieldName)
+	fieldNameBytes := commons.String2Bytes(field.FieldName)
 	// 将字段类型转换为字节数组
-	fieldTypeBytes := []byte(field.FieldType)
+	fieldTypeBytes := commons.String2Bytes(field.FieldType)
 	// 将索引转换为字节数组
 	indexBytes := make([]byte, 8)
 	binary.BigEndian.PutUint64(indexBytes, uint64(field.index))
 	// 将字段名、字段类型和索引的字节数组合并，然后插入到持久化存储中
 	data := commons.BytesConcat(fieldNameBytes, fieldTypeBytes, indexBytes)
 	// 插入成功后，会返回一个唯一的uid，将这个uid设置为当前Field对象的uid
-	uid, err := field.table.TBM.DM.Insert(xid, data)
+	uid, err := field.table.TBM.VM.Insert(xid, data)
 	if err != nil {
 		return err
 	}
@@ -188,13 +189,13 @@ func (field *Field) string2Value(str string) interface{} {
 		if err != nil {
 			panic(err)
 		}
-		return num
+		return int32(num)
 	case "int64":
 		num, err := strconv.ParseInt(str, 10, 64)
 		if err != nil {
 			panic(err)
 		}
-		return num
+		return int64(num)
 	}
 	return nil
 }
@@ -243,7 +244,7 @@ func (field *Field) Value2Raw(v interface{}) []byte {
 	var raw []byte
 	switch field.FieldType {
 	case "string":
-		raw = []byte(v.(string))
+		raw = commons.String2Bytes(v.(string))
 		break
 	case "int32":
 		raw = make([]byte, 4)
@@ -309,7 +310,7 @@ func (field *Field) ParseValue(raw []byte) ParseFieldResult {
 		shift = int(parseStringResult.Next)
 		break
 	case "int32":
-		v = int64(binary.BigEndian.Uint32(raw[:4]))
+		v = int32(binary.BigEndian.Uint32(raw[:4]))
 		shift = 4
 		break
 	case "int64":
@@ -341,7 +342,7 @@ func (field *Field) String() string {
 	result += field.FieldName
 	result += ", "
 	result += field.FieldType
-	if field.index == 0 {
+	if field.index != 0 {
 		result += ", Index"
 	} else {
 		result += ", NoIndex"

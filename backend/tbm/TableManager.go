@@ -36,13 +36,16 @@ func OpenTableManager(path string, vm *vm.VersionManager, dm *dm.DataManager) *T
 }
 
 func NewTableManager(vm *vm.VersionManager, dm *dm.DataManager, booter *Booter) *TableManager {
-	return &TableManager{
+	tableManager := &TableManager{
 		VM:            vm,
 		DM:            dm,
 		booter:        booter,
 		tableCache:    make(map[string]*Table),
 		xidTableCache: make(map[int64][]*Table),
 	}
+
+	tableManager.loadTables()
+	return tableManager
 }
 
 // loadTables 加载所有的数据库表
@@ -75,8 +78,8 @@ func (tableManager *TableManager) updateFirstTableUid(uid int64) {
 }
 
 type BeginResult struct {
-	xid    int64
-	result []byte
+	Xid    int64
+	Result []byte
 }
 
 func (tableManager *TableManager) Begin(begin *statement.BeginStatement) *BeginResult {
@@ -87,8 +90,8 @@ func (tableManager *TableManager) Begin(begin *statement.BeginStatement) *BeginR
 	} else {
 		level = 0
 	}
-	result.xid = tableManager.VM.Begin(level)
-	result.result = []byte("begin")
+	result.Xid = tableManager.VM.Begin(level)
+	result.Result = []byte("begin")
 
 	return result
 }
@@ -103,7 +106,7 @@ func (tableManager *TableManager) Commit(xid int64) ([]byte, error) {
 
 func (tableManager *TableManager) Abort(xid int64) []byte {
 	tableManager.VM.Abort(xid)
-	return []byte("commit")
+	return []byte("abort")
 }
 
 func (tableManager *TableManager) Show(xid int64) []byte {
@@ -111,20 +114,20 @@ func (tableManager *TableManager) Show(xid int64) []byte {
 	defer tableManager.lock.Unlock()
 
 	str := ""
-	for _, tb := range tableManager.xidTableCache[xid] {
+	for _, tb := range tableManager.tableCache {
 		str += tb.String()
 		str += "\n"
 	}
 
-	tables := tableManager.xidTableCache[xid]
-	if tables == nil {
-		return []byte("No tables\n")
-	}
+	//tables := tableManager.xidTableCache[xid]
+	//if tables == nil {
+	//	return []byte("No tables\n")
+	//}
 
-	for _, tb := range tables {
-		str += tb.String()
-		str += "\n"
-	}
+	//for _, tb := range tables {
+	//	str += tb.String()
+	//	str += "\n"
+	//}
 	return []byte(str)
 }
 

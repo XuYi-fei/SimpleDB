@@ -14,5 +14,5 @@ type TransactionManager interface {
 
 	IsAborted(xid int64) bool
 
-	close()
+	Close()
 }

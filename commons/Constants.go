@@ -58,6 +58,14 @@ type ErrorMessageType struct {
 	DuplicatedTableError string
 	// 数据表不存在错误
 	TableNotFoundError string
+
+	// 无效数据包错误
+	InvalidPkgDataError string
+
+	// 嵌套事务错误
+	NestedTransactionError string
+	// 无事务错误（提交或终止了不存在的事务）
+	NoTransactionError string
 }
 
 var ErrorMessage = ErrorMessageType{
@@ -82,4 +90,7 @@ var ErrorMessage = ErrorMessageType{
 	InvalidValuesError:       "Invalid values",
 	DuplicatedTableError:     "Duplicated table",
 	TableNotFoundError:       "Table not found",
+	InvalidPkgDataError:      "Invalid package data",
+	NestedTransactionError:   "Nested transaction not supported!",
+	NoTransactionError:       "No transaction",
 }
