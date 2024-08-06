@@ -46,6 +46,7 @@ func CreateTransactionManagerImpl(path string) (*TransactionManagerImpl, error) 
 	if err != nil {
 		return nil, err
 	} else {
+		// 创建新的事务管理器TM
 		transactionManager = &TransactionManagerImpl{
 			file: file,
 		}
@@ -72,11 +73,16 @@ func OpenTransactionManagerImpl(path string) (*TransactionManagerImpl, error) {
 	file, err := os.OpenFile(path+XID_SUFFIX, os.O_RDWR, 0755)
 	if err != nil {
 		return nil, err
-	} else {
-		return &TransactionManagerImpl{
-			file: file,
-		}, nil
 	}
+	// 创建新的事务管理器TM
+	transactionManager := &TransactionManagerImpl{
+		file: file,
+	}
+	// 检查XID计数器是否合法
+	transactionManager.checkXidCounter()
+	commons.Logger.Debugf("xid文件校验成功!")
+
+	return transactionManager, nil
 }
 
 // checkXidCounter 检查XID计数器是否合法
@@ -91,6 +97,11 @@ func (manager *TransactionManagerImpl) checkXidCounter() {
 	xidHeader := make([]byte, LEN_XID_HEADER_LENGTH)
 	_, _ = manager.file.ReadAt(xidHeader, 0)
 	manager.xidCounter = int64(binary.BigEndian.Uint64(xidHeader))
+
+	if fileLength != manager.getXidPosition(manager.xidCounter+1) {
+		panic(commons.ErrorMessage.BadXIDFileException)
+	}
+
 }
 
 // getXidPosition 根据事务xid取得其在xid文件中对应的位置
