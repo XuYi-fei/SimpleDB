@@ -9,17 +9,22 @@ type PageX struct {
 }
 
 var (
+	// PageXOffsetFreeSpace 表示页面空闲位置的起始偏移量
 	PageXOffsetFreeSpace int32 = 0
-	PageXOffsetDataSize  int32 = 2
-	PageXMaxFreeSpace          = constants.PageSize - int(PageXOffsetDataSize)
+	// PageXOffsetDataSize 数据的起始偏移量
+	PageXOffsetDataSize int32 = 2
+	// PageXMaxFreeSpace 表示页面最大的空闲空间
+	PageXMaxFreeSpace = constants.PageSize - int(PageXOffsetDataSize)
 )
 
+// PageXInitRaw 初始化一个普通页面
 func PageXInitRaw() []byte {
 	data := make([]byte, constants.PageSize)
 	PageXSetFreeSpaceOffset(data, int16(PageXOffsetDataSize))
 	return data
 }
 
+// PageXSetFreeSpaceOffset 在前两字节设置页面的空闲位置的起始偏移量
 func PageXSetFreeSpaceOffset(raw []byte, offsetData int16) {
 	binary.BigEndian.PutUint16(raw[int(PageXOffsetFreeSpace):int(PageXOffsetDataSize)], uint16(offsetData))
 }
@@ -48,7 +53,7 @@ func InsertData2PageX(page *Page, data []byte) int16 {
 	return offset
 }
 
-// PageXGetFreeSpace 获得页面的剩余空间
+// PageXGetFreeSpace 获得页面的剩余空间字节数
 func PageXGetFreeSpace(page *Page) int32 {
 	return int32(constants.PageSize) - int32(PageXGetFreeSpaceOffset(page.GetData()))
 }

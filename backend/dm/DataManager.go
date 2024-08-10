@@ -177,7 +177,7 @@ func (dataManager *DataManager) ReleaseForCache(dataItem *DataItem) {
 }
 
 func CreateDataManager(path string, memory int64, tm *tm.TransactionManagerImpl) *DataManager {
-	PC := dmPage.CreatePageCacheImpl(path, memory)
+	PC := dmPage.CreatePageCache(path, memory)
 	DBLogger := logger.CreateLogger(path)
 	dataManager := NewDataManager(tm, PC, DBLogger)
 	dataManager.InitPageOne()
@@ -186,7 +186,7 @@ func CreateDataManager(path string, memory int64, tm *tm.TransactionManagerImpl)
 }
 
 //func CreateDataManagerByMockTM(path string, memory int64, tm *tm.MockTransactionManager) *DataManager {
-//	PC := dmPage.CreatePageCacheImpl(path, memory)
+//	PC := dmPage.CreatePageCache(path, memory)
 //	DBLogger := logger.CreateLogger(path)
 //	dataManager := NewDataManager(tm, PC, DBLogger)
 //	dataManager.InitPageOne()
@@ -195,7 +195,7 @@ func CreateDataManager(path string, memory int64, tm *tm.TransactionManagerImpl)
 //}
 
 func OpenDataManager(path string, memory int64, tm *tm.TransactionManagerImpl) *DataManager {
-	PC := dmPage.OpenPageCacheImpl(path, memory)
+	PC := dmPage.OpenPageCache(path, memory)
 	DBLogger := logger.OpenLogger(path)
 	dataManager := NewDataManager(tm, PC, DBLogger)
 	if !dataManager.LoadCheckPageOne() {

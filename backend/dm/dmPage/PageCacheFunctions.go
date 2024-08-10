@@ -6,87 +6,91 @@ import (
 )
 
 // GetForCache 实现抽象缓存接口
-func (pageCacheImpl *PageCache) GetForCache(key int64) (*Page, error) {
+func (pageCache *PageCache) GetForCache(key int64) (*Page, error) {
 	pageNo := int(key)
-	offset := pageCacheImpl.pageOffset(pageNo)
+	offset := pageCache.pageOffset(pageNo)
 
 	buf := make([]byte, constants.PageSize)
 	// 加锁，准备获取页面数据
-	pageCacheImpl.lock.Lock()
-	defer pageCacheImpl.lock.Unlock()
+	pageCache.lock.Lock()
+	defer pageCache.lock.Unlock()
 
-	_, err := pageCacheImpl.file.ReadAt(buf, offset)
+	_, err := pageCache.file.ReadAt(buf, offset)
 	if err != nil {
 		return nil, err
 	}
 
-	page := NewPageImpl(pageNo, buf, pageCacheImpl)
+	page := NewPage(pageNo, buf, pageCache)
 
 	return page, nil
 }
 
-func (pageCacheImpl *PageCache) ReleaseForCache(pg *Page) {
+// ReleaseForCache 实现抽象缓存接口
+func (pageCache *PageCache) ReleaseForCache(pg *Page) {
 	if pg.IsDirty() {
-		pageCacheImpl.flush(pg)
+		pageCache.flush(pg)
 		pg.SetDirty(false)
 	}
 }
 
-func (pageCacheImpl *PageCache) Release(page *Page) {
-	pageCacheImpl.CacheManager.Release(int64(page.GetPageNumber()))
+// Release 释放页面
+func (pageCache *PageCache) Release(page *Page) {
+	pageCache.CacheManager.Release(int64(page.GetPageNumber()))
 }
 
 // NewPage 创建新页面，返回创建的页的页码
-func (pageCacheImpl *PageCache) NewPage(initData []byte) int {
-	pageNumber := atomic.AddInt32(&pageCacheImpl.pageNumbers, 1)
-	pg := NewPageImpl(int(pageNumber), initData, nil)
-	pageCacheImpl.flush(pg)
+func (pageCache *PageCache) NewPage(initData []byte) int {
+	pageNumber := atomic.AddInt32(&pageCache.pageNumbers, 1)
+	pg := NewPage(int(pageNumber), initData, nil)
+	pageCache.flush(pg)
 	return int(pageNumber)
 }
 
 // GetPage 获取页面
-func (pageCacheImpl *PageCache) GetPage(pageNumber int) (*Page, error) {
-	return pageCacheImpl.CacheManager.Get(int64(pageNumber))
+func (pageCache *PageCache) GetPage(pageNumber int) (*Page, error) {
+	return pageCache.CacheManager.Get(int64(pageNumber))
 }
 
 // FlushPage 刷新页面
-func (pageCacheImpl *PageCache) FlushPage(pg *Page) {
-	pageCacheImpl.flush(pg)
+func (pageCache *PageCache) FlushPage(pg *Page) {
+	pageCache.flush(pg)
 }
 
 // flush 真正刷新
-func (pageCacheImpl *PageCache) flush(pg *Page) {
+func (pageCache *PageCache) flush(pg *Page) {
 	pageNo := (*pg).GetPageNumber()
-	offset := pageCacheImpl.pageOffset(pageNo)
+	offset := pageCache.pageOffset(pageNo)
 
-	pageCacheImpl.lock.Lock()
-	defer pageCacheImpl.lock.Unlock()
+	pageCache.lock.Lock()
+	defer pageCache.lock.Unlock()
 
 	// 写入数据
-	pageCacheImpl.file.WriteAt((*pg).GetData(), offset)
+	pageCache.file.WriteAt((*pg).GetData(), offset)
 	// 刷新磁盘
-	pageCacheImpl.file.Sync()
+	pageCache.file.Sync()
 
 }
 
-func (pageCacheImpl *PageCache) TruncateByPgNo(maxPageNumber int) {
-	size := pageCacheImpl.pageOffset(maxPageNumber + 1)
-	pageCacheImpl.file.Truncate(size)
-	atomic.StoreInt32(&pageCacheImpl.pageNumbers, int32(maxPageNumber))
+// TruncateByPgNo 截断文件，保留指定页数
+func (pageCache *PageCache) TruncateByPgNo(maxPageNumber int) {
+	size := pageCache.pageOffset(maxPageNumber + 1)
+	pageCache.file.Truncate(size)
+	atomic.StoreInt32(&pageCache.pageNumbers, int32(maxPageNumber))
 }
 
-func (pageCacheImpl *PageCache) Close() {
-	pageCacheImpl.CacheManager.Close()
-	err := pageCacheImpl.file.Close()
+// Close 关闭文件
+func (pageCache *PageCache) Close() {
+	pageCache.CacheManager.Close()
+	err := pageCache.file.Close()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (pageCacheImpl *PageCache) GetPageNumber() int {
-	return int(atomic.LoadInt32(&pageCacheImpl.pageNumbers))
+func (pageCache *PageCache) GetPageNumber() int {
+	return int(atomic.LoadInt32(&pageCache.pageNumbers))
 }
 
-func (pageCacheImpl *PageCache) pageOffset(pageNo int) int64 {
+func (pageCache *PageCache) pageOffset(pageNo int) int64 {
 	return int64((pageNo - 1) * constants.PageSize)
 }

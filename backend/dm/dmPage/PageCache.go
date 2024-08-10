@@ -18,7 +18,7 @@ type Page struct {
 	pageCache *PageCache
 }
 
-func NewPageImpl(pageNumber int, data []byte, pc *PageCache) *Page {
+func NewPage(pageNumber int, data []byte, pc *PageCache) *Page {
 	return &Page{
 		pageNumber: pageNumber,
 		data:       data,
@@ -29,33 +29,33 @@ func NewPageImpl(pageNumber int, data []byte, pc *PageCache) *Page {
 }
 
 // Lock 加锁
-func (pageImpl *Page) Lock() {
-	pageImpl.mu.Lock()
+func (page *Page) Lock() {
+	page.mu.Lock()
 }
 
 // Unlock 解锁
-func (pageImpl *Page) Unlock() {
-	pageImpl.mu.Unlock()
+func (page *Page) Unlock() {
+	page.mu.Unlock()
 }
 
-func (pageImpl *Page) Release() {
-	pageImpl.pageCache.Release(pageImpl)
+func (page *Page) Release() {
+	page.pageCache.Release(page)
 }
 
-func (pageImpl *Page) SetDirty(dirty bool) {
-	pageImpl.dirty = dirty
+func (page *Page) SetDirty(dirty bool) {
+	page.dirty = dirty
 }
 
-func (pageImpl *Page) IsDirty() bool {
-	return pageImpl.dirty
+func (page *Page) IsDirty() bool {
+	return page.dirty
 }
 
-func (pageImpl *Page) GetPageNumber() int {
-	return pageImpl.pageNumber
+func (page *Page) GetPageNumber() int {
+	return page.pageNumber
 }
 
-func (pageImpl *Page) GetData() []byte {
-	return pageImpl.data
+func (page *Page) GetData() []byte {
+	return page.data
 }
 
 var (
@@ -73,8 +73,8 @@ type PageCache struct {
 	CacheManager *common.AbstractCache[*Page]
 }
 
-// CreatePageCacheImpl 创建页面缓存
-func CreatePageCacheImpl(path string, memory int64) *PageCache {
+// CreatePageCache 创建页面缓存
+func CreatePageCache(path string, memory int64) *PageCache {
 	file, err := os.OpenFile(path+DB_SUFFIX, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
@@ -82,7 +82,7 @@ func CreatePageCacheImpl(path string, memory int64) *PageCache {
 
 	// 获取文件长度
 	fileLength, _ := utils.GetFileSizeByPath(path + DB_SUFFIX)
-	pageCacheImpl := PageCache{
+	pageCache := PageCache{
 		file:         file,
 		pageNumbers:  int32(int(fileLength / int64(constants.PageSize))),
 		lock:         commons.ReentrantLock{},
@@ -94,21 +94,21 @@ func CreatePageCacheImpl(path string, memory int64) *PageCache {
 	if maxResource < MEM_MIN_LIM {
 		panic(commons.ErrorMessage.AllocMemoryTooSmallError)
 	}
-	cache := common.NewAbstractCache[*Page](maxResource, &pageCacheImpl)
+	cache := common.NewAbstractCache[*Page](maxResource, &pageCache)
 
 	// 把抽象缓存创建出来赋值
-	pageCacheImpl.CacheManager = cache
+	pageCache.CacheManager = cache
 
-	return &pageCacheImpl
+	return &pageCache
 }
 
-// OpenPageCacheImpl 打开页面缓存
-func OpenPageCacheImpl(path string, memory int64) *PageCache {
+// OpenPageCache 打开页面缓存
+func OpenPageCache(path string, memory int64) *PageCache {
 	file, _ := os.OpenFile(path+DB_SUFFIX, os.O_RDWR, 0755)
 
 	// 获取文件长度
 	fileLength, _ := utils.GetFileSizeByPath(path + DB_SUFFIX)
-	pageCacheImpl := PageCache{
+	pageCache := PageCache{
 		file:         file,
 		pageNumbers:  int32(int(fileLength / int64(constants.PageSize))),
 		lock:         commons.ReentrantLock{},
@@ -117,10 +117,10 @@ func OpenPageCacheImpl(path string, memory int64) *PageCache {
 
 	// 计算最大缓存数量
 	maxResource := int(memory / int64(constants.PageSize))
-	cache := common.NewAbstractCache[*Page](maxResource, &pageCacheImpl)
+	cache := common.NewAbstractCache[*Page](maxResource, &pageCache)
 
 	// 把抽象缓存创建出来赋值
-	pageCacheImpl.CacheManager = cache
+	pageCache.CacheManager = cache
 
-	return &pageCacheImpl
+	return &pageCache
 }
