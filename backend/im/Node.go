@@ -311,11 +311,11 @@ func (node *Node) InsertAndSplit(uid int64, key int64) (*InsertAndSplitResult, e
 		// 设置新节点的UID和新键，并返回结果
 		result.NewSon = splitResult.newSon
 		result.NewKey = splitResult.newKey
-		node.DataItem.After(tm.SUPER_XID)
+		node.DataItem.After(tm.SuperXid)
 		return result, nil
 	} else {
 		// 如果不需要分裂节点，提交数据项的修改
-		node.DataItem.After(tm.SUPER_XID)
+		node.DataItem.After(tm.SuperXid)
 		return result, nil
 	}
 
@@ -392,7 +392,7 @@ func (node *Node) split() (*SplitResult, error) {
 	// 从原节点的原始字节数组中复制一部分数据到新节点的原始字节数组中
 	CopyRawFromKth(node.Raw, nodeRaw, BalanceNumber)
 	// 在数据管理器中插入新节点的原始数据，并获取新节点的UID
-	son, err := node.Tree.DM.Insert(tm.SUPER_XID, nodeRaw)
+	son, err := node.Tree.DM.Insert(tm.SuperXid, nodeRaw)
 	if err != nil {
 		return nil, err
 	}

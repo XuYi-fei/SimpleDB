@@ -21,7 +21,7 @@ type BPlusTree struct {
 func CreateBPlusTree(dm *dm.DataManager) (int64, error) {
 	rawRoot := NewNilRootRaw()
 	// 将一个根节点插入到数据管理器中
-	rootUid, err := dm.Insert(tm.SUPER_XID, rawRoot)
+	rootUid, err := dm.Insert(tm.SuperXid, rawRoot)
 	if err != nil {
 		return 0, err
 	}
@@ -29,7 +29,7 @@ func CreateBPlusTree(dm *dm.DataManager) (int64, error) {
 	// 将根节点的uid转换为字节数组
 	binary.BigEndian.PutUint64(rootUidByte, uint64(rootUid))
 	// 将根节点的uid插入到数据管理器中
-	bootUid, err := dm.Insert(tm.SUPER_XID, rootUidByte)
+	bootUid, err := dm.Insert(tm.SuperXid, rootUidByte)
 	if err != nil {
 		return 0, err
 	}
@@ -60,7 +60,7 @@ func (bTree *BPlusTree) updateRootUid(left int64, right int64, rightKey int64) e
 	defer bTree.BootLock.Unlock()
 
 	rootRaw := NewRootRaw(left, right, rightKey)
-	newRootUid, err := bTree.DM.Insert(tm.SUPER_XID, rootRaw)
+	newRootUid, err := bTree.DM.Insert(tm.SuperXid, rootRaw)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (bTree *BPlusTree) updateRootUid(left int64, right int64, rightKey int64) e
 
 	dataItemRaw := bTree.BootDataItem.Data()
 	binary.BigEndian.PutUint64(dataItemRaw, uint64(newRootUid))
-	bTree.BootDataItem.After(tm.SUPER_XID)
+	bTree.BootDataItem.After(tm.SuperXid)
 	return nil
 }
 

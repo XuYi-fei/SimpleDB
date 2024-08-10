@@ -25,11 +25,6 @@ type AbstractCache[T any] struct {
 	count int
 	lock  commons.ReentrantLock
 
-	//// GetForCache 获取缓存中的资源
-	//GetForCache func(key int64) (T, error)
-	//// ReleaseForCache 从缓存中删除资源
-	//ReleaseForCache func(key T)
-
 	iAbstractCache IAbstractCache[T]
 }
 
@@ -42,7 +37,6 @@ func NewAbstractCache[T any](maxResource int, cacheImpl IAbstractCache[T]) *Abst
 		maxResource:    maxResource,
 		count:          0,
 		iAbstractCache: cacheImpl,
-		//lock:            sync.Mutex{}, // 这里不初始化也行，默认的也有值
 	}
 }
 
@@ -105,7 +99,13 @@ func (cache *AbstractCache[T]) Release(key int64) {
 	cache.lock.Lock()
 	defer cache.lock.Unlock()
 
-	ref := cache.references[key] - 1
+	ref, ok := cache.references[key]
+	if !ok {
+		// 该资源不存在
+		panic("资源不存在")
+		return
+	}
+	ref -= 1
 	if ref <= 0 {
 		// 释放资源
 		obj, err := cache.Get(key)
@@ -113,13 +113,17 @@ func (cache *AbstractCache[T]) Release(key int64) {
 			// 释放资源失败
 			return
 		}
+		// 处理资源的释放
 		cache.iAbstractCache.ReleaseForCache(obj)
+		// 从引用计数中移除该资源
 		delete(cache.references, key)
+		// 从缓存中移除该资源
 		delete(cache.cache, key)
+		// 缓存中的资源数减一
 		cache.count--
-
 		return
 	} else {
+		// 更新引用计数
 		cache.references[key] = ref
 	}
 }

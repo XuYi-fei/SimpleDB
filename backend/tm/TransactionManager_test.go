@@ -34,7 +34,7 @@ func TestMultiThread(t *testing.T) {
 
 	transactionManager, _ := CreateTransactionManagerImpl("/Users/xuyifei/repos/SimpleDB/data/test/backend/tm/tranmger_test")
 
-	defer os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/tm/tranmger_test" + XID_SUFFIX)
+	defer os.RemoveAll("/Users/xuyifei/repos/SimpleDB/data/test/backend/tm/tranmger_test" + XidSuffix)
 
 	for i := 0; i < workerNum; i++ {
 		go func() {

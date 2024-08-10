@@ -68,7 +68,7 @@ func LoadTable(tbm *TableManager, uid int64) *Table {
 	// 初始化一个字节数组用于存储从数据库中读取的原始数据
 	var raw []byte
 	// 使用表管理器的版本管理器从数据库中读取指定uid的表的原始数据
-	raw, err := tbm.VM.Read(tm.SUPER_XID, uid)
+	raw, err := tbm.VM.Read(tm.SuperXid, uid)
 	if err != nil {
 		// 如果在读取过程中发生异常，处理异常
 		panic(err)

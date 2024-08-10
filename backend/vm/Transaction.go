@@ -36,7 +36,7 @@ func NewTransaction(xid int64, level int32, active map[int64]*Transaction) *Tran
 }
 
 func (t *Transaction) IsInSnapShot(xid int64) bool {
-	if xid == tm.SUPER_XID {
+	if xid == tm.SuperXid {
 		return false
 	}
 	isIn, ok := t.SnapShot[xid]

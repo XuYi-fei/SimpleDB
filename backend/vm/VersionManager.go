@@ -236,7 +236,7 @@ func NewVersionManager(transactionManager *tm.TransactionManagerImpl, dm *dm.Dat
 		ActiveTransaction: make(map[int64]*Transaction),
 		LT:                NewLockTable(),
 	}
-	vm.ActiveTransaction[tm.SUPER_XID] = NewTransaction(tm.SUPER_XID, 0, nil)
+	vm.ActiveTransaction[tm.SuperXid] = NewTransaction(tm.SuperXid, 0, nil)
 	cacheManager := common.NewAbstractCache[*Entry](0, vm)
 	vm.CacheManager = cacheManager
 	return vm

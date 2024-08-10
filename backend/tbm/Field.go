@@ -84,7 +84,7 @@ func CreateField(tb *Table, xid int64, fieldName string, fieldType string, index
 func LoadField(tb *Table, uid int64) *Field {
 	// 用于存储从持久化存储中读取的原始字节数据
 	// 从持久化存储中读取uid对应的原始字节数据
-	raw, err := tb.TBM.VM.Read(tm.SUPER_XID, uid)
+	raw, err := tb.TBM.VM.Read(tm.SuperXid, uid)
 	if err != nil {
 		// 如果读取过程中出现异常，调用panic方法处理异常
 		panic(err)
