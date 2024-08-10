@@ -58,13 +58,14 @@ func (b *Booter) Update(data []byte) {
 		panic(err)
 	}
 
+	tmpFile.Close()
+
 	// 检查之前的启动信息文件是否存在
-	if _, err := os.Stat(b.Path + BooterSuffix); err == nil {
+	// fix: 先关掉之前的file句柄
+	b.file.Close()
+	if err = os.Remove(b.Path + BooterSuffix); err != nil {
 		// 之前的启动信息文件存在，删除它
-		err = os.Remove(b.Path + BooterSuffix)
-		if err != nil {
-			panic(err)
-		}
+		panic(err)
 	}
 	// 将临时文件移动到启动信息文件的位置，替换原来的文件
 	if err := os.Rename(b.Path+BooterTmpSuffix, b.Path+BooterSuffix); err != nil {
@@ -98,6 +99,7 @@ func CreateBooter(path string) *Booter {
 	if err := file.Chmod(0666); err != nil {
 		panic(err)
 	}
+	file.Close()
 	// 返回一个新的数据库启动信息对象
 	return &Booter{
 		Path: path,
