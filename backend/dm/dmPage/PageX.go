@@ -69,7 +69,7 @@ func PageXRecoverInsert(page *Page, raw []byte, offset int16) {
 }
 
 // PageXRecoverUpdate 恢复更新数据
-func PageXRecoverUpdate(page *Page, raw []byte, offset int32) {
+func PageXRecoverUpdate(page *Page, raw []byte, offset int16) {
 	page.SetDirty(true)
-	copy(page.GetData()[offset:offset+int32(len(raw))], raw)
+	copy(page.GetData()[offset:offset+int16(len(raw))], raw)
 }

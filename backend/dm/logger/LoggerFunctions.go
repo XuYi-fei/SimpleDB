@@ -29,7 +29,7 @@ func (logger *DBLogger) init() {
 	checkSum := int32(binary.BigEndian.Uint32(raw))
 	logger.fileSize = size
 	logger.xCheckSum = checkSum
-
+	// 检查校验和并且移除后面的截断部分
 	logger.checkAndRemoveTail()
 }
 
@@ -40,22 +40,24 @@ func (logger *DBLogger) checkAndRemoveTail() {
 	var xCheck int32 = 0
 	// 从头开始读取，计算校验和
 	for {
+		// 读取下一条日志
 		log := logger.internNext()
 		if log == nil {
 			break
 		}
+		// 计算当前这条日志的校验和
 		xCheck = logger.calCheckSum(xCheck, log)
 	}
 	if xCheck != logger.xCheckSum {
 		panic(errors.New(commons.ErrorMessage.BadLogFileError))
 	}
 
+	// 截断后面的部分
 	err := logger.Truncate(logger.currentPosition)
 	if err != nil {
 		panic(err)
 	}
 
-	// TODO 这一步有没有用，值得商榷
 	_, err = logger.file.Seek(logger.currentPosition, 1)
 	if err != nil {
 		panic(err)
