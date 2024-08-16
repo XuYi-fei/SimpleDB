@@ -8,15 +8,15 @@ import (
 )
 
 /**
- * dataItem 结构如下：
- * [ValidFlag] [DataSize] [Data]
- * ValidFlag 1字节，0为合法，1为非法
- * DataSize  2字节，标识Data的长度
- * UID 结构如下:
- * [pageNumber] [空] [offset]
- * pageNumber 4字节，页号
- * 中间空下2字节
- * offset 2字节，偏移量
+* dataItem 结构如下：
+* [ValidFlag] [DataSize] [Data]
+* ValidFlag 1字节，0为合法，1为非法
+* DataSize  2字节，标识Data的长度
+* UID 结构如下:
+* [pageNumber] [空] [offset]
+* pageNumber 4字节，页号
+* 中间空下2字节
+* offset 2字节，偏移量
  */
 var (
 	// DataItemOffsetValid 数据项的校验位置
@@ -30,17 +30,17 @@ var (
 )
 
 type DataItem struct {
-	// 数据
+	//  raw 原始数据
 	raw []byte
-
+	// oldRaw 旧数据
 	oldRaw []byte
 
-	// lock TODO 读写锁，是否需要可重入锁还不清楚
 	lock sync.RWMutex
-
+	// dataManager 数据管理器
 	dataManager *DataManager
-
-	uid  int64
+	// uid 数据项的UID，唯一标识符
+	uid int64
+	// page 页面对象
 	page *dmPage.Page
 }
 
@@ -68,6 +68,7 @@ func (dataItem *DataItem) Data() []byte {
 func (dataItem *DataItem) Before() {
 	dataItem.lock.Lock()
 	dataItem.page.SetDirty(true)
+	//保存原始数据的副本，以便在需要时进行回滚
 	dataItem.oldRaw = make([]byte, len(dataItem.raw))
 	copy(dataItem.oldRaw, dataItem.raw)
 }
@@ -116,6 +117,7 @@ func (dataItem *DataItem) UID() int64 {
 	return dataItem.uid
 }
 
+// GetOldRaw 返回数据项的旧数据
 func (dataItem *DataItem) GetOldRaw() []byte {
 	return dataItem.oldRaw
 }
