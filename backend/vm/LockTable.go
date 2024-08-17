@@ -178,7 +178,6 @@ func (lockTable *LockTable) removeFromList(listMap map[int64][]int64, uid0 int64
 
 // hasDeadLock 检查是否存在死锁
 func (lockTable *LockTable) hasDeadLock() bool {
-	// TODO：这里需不需要加锁呢？
 	lockTable.lock.Lock()
 	defer lockTable.lock.Unlock()
 

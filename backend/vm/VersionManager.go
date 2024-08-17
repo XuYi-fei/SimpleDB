@@ -214,6 +214,7 @@ func (versionManager *VersionManager) ReleaseEntry(entry *Entry) {
 }
 
 func (versionManager *VersionManager) GetForCache(uid int64) (*Entry, error) {
+	// 核心还是调用dm.Read()方法
 	entry := LoadEntry(versionManager, uid)
 	if entry == nil {
 		return nil, errors.New(commons.ErrorMessage.NullEntryError)
