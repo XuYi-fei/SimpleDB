@@ -8,6 +8,7 @@ import (
 type Encoder struct {
 }
 
+// Encode 根据pkg，添加对应的Flag信息，返回编码后的数据
 func (e *Encoder) Encode(pkg *Package) []byte {
 	if pkg.GetErr() != nil {
 		err := pkg.GetErr()
@@ -21,6 +22,7 @@ func (e *Encoder) Encode(pkg *Package) []byte {
 	}
 }
 
+// Decode 根据data，解析出对应的Package
 func (e *Encoder) Decode(data []byte) (*Package, error) {
 	if len(data) < 1 {
 		return nil, errors.New(commons.ErrorMessage.InvalidPkgDataError)

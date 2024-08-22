@@ -72,6 +72,7 @@ func (bTree *BPlusTree) updateRootUid(left int64, right int64, rightKey int64) e
 	return nil
 }
 
+// searchLeaf 从一个节点开始搜索叶子节点
 func (bTree *BPlusTree) searchLeaf(nodeUid int64, key int64) (int64, error) {
 	node, err := LoadNode(bTree, nodeUid)
 	if err != nil {

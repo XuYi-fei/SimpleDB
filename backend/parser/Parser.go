@@ -6,6 +6,7 @@ import (
 	"errors"
 )
 
+// Parse 解析SQL语句
 func Parse(statement []byte) (interface{}, error) {
 	tokenizer := NewTokenizer(statement)
 	token, err := tokenizer.Peek()
@@ -75,13 +76,14 @@ func Parse(statement []byte) (interface{}, error) {
 
 }
 
+// parseBegin 解析begin语句
 func parseBegin(tokenizer *Tokenizer) (*statement.BeginStatement, error) {
 	isolation, err := tokenizer.Peek()
 	if err != nil {
 		return nil, err
 	}
 	begin := &statement.BeginStatement{}
-
+	// 如果没有isolation关键字，那么直接返回，默认隔离级别为read committed
 	if isolation == "" {
 		return begin, nil
 	}
@@ -101,11 +103,12 @@ func parseBegin(tokenizer *Tokenizer) (*statement.BeginStatement, error) {
 	}
 	tokenizer.Pop()
 
-	// 获取等级
+	// 获取具体的隔离级别
 	tmp1, err := tokenizer.Peek()
 	if err != nil {
 		return nil, err
 	}
+	// 如果是read committed，那么设置隔离级别为read committed
 	if tmp1 == "read" {
 		tokenizer.Pop()
 		tmp2, err := tokenizer.Peek()
@@ -125,6 +128,7 @@ func parseBegin(tokenizer *Tokenizer) (*statement.BeginStatement, error) {
 		} else {
 			return nil, errors.New(commons.ErrorMessage.InvalidCommandError)
 		}
+		// 如果是repeatable read，那么设置隔离级别为repeatable read
 	} else if tmp1 == "repeatable" {
 		tokenizer.Pop()
 		tmp2, err := tokenizer.Peek()
@@ -150,7 +154,9 @@ func parseBegin(tokenizer *Tokenizer) (*statement.BeginStatement, error) {
 	}
 }
 
+// parseAbort 解析abort语句
 func parseAbort(tokenizer *Tokenizer) (*statement.AbortStatement, error) {
+	// abort语句后不应该有任何其他的标记了
 	tmp, err := tokenizer.Peek()
 	if err != nil {
 		return nil, err
@@ -161,6 +167,7 @@ func parseAbort(tokenizer *Tokenizer) (*statement.AbortStatement, error) {
 	return &statement.AbortStatement{}, nil
 }
 
+// parseCreate 解析create语句
 func parseCreate(tokenizer *Tokenizer) (*statement.CreateStatement, error) {
 	create := &statement.CreateStatement{}
 	// 获取table关键字
@@ -185,6 +192,7 @@ func parseCreate(tokenizer *Tokenizer) (*statement.CreateStatement, error) {
 
 	fNames := make([]string, 0)
 	fTypes := make([]string, 0)
+	// 循环获取字段名和字段类型
 	for {
 		tokenizer.Pop()
 		// 获取字段名
@@ -271,7 +279,9 @@ func parseCreate(tokenizer *Tokenizer) (*statement.CreateStatement, error) {
 	return create, nil
 }
 
-func parseCommit(tokenizer *Tokenizer) (*statement.CommitStatement, error) {
+// parseCommit 解析commit语句
+func parseCommit(tokenizer *Tokenizer) (*statement.CommitStatement, error) {、
+	// commit语句后不应该有任何其他的标记了
 	tmp, err := tokenizer.Peek()
 	if err != nil {
 		return nil, err
@@ -282,6 +292,7 @@ func parseCommit(tokenizer *Tokenizer) (*statement.CommitStatement, error) {
 	return &statement.CommitStatement{}, nil
 }
 
+// parserDelete 解析delete语句
 func parserDelete(tokenizer *Tokenizer) (*statement.DeleteStatement, error) {
 	deleteStatement := &statement.DeleteStatement{}
 
@@ -311,6 +322,7 @@ func parserDelete(tokenizer *Tokenizer) (*statement.DeleteStatement, error) {
 	return deleteStatement, nil
 }
 
+// parseDrop 解析drop语句
 func parseDrop(tokenizer *Tokenizer) (*statement.DropStatement, error) {
 	drop := &statement.DropStatement{}
 
@@ -344,6 +356,7 @@ func parseDrop(tokenizer *Tokenizer) (*statement.DropStatement, error) {
 	return drop, nil
 }
 
+// parseShow 解析show语句
 func parseShow(tokenizer *Tokenizer) (*statement.ShowStatement, error) {
 	tmp, err := tokenizer.Peek()
 	if err != nil {
@@ -353,9 +366,9 @@ func parseShow(tokenizer *Tokenizer) (*statement.ShowStatement, error) {
 		return &statement.ShowStatement{}, nil
 	}
 	return nil, errors.New(commons.ErrorMessage.InvalidCommandError)
-
 }
 
+// parseUpdate 解析update语句
 func parseUpdate(tokenizer *Tokenizer) (*statement.UpdateStatement, error) {
 	update := &statement.UpdateStatement{}
 	// 获取表名
@@ -412,6 +425,7 @@ func parseUpdate(tokenizer *Tokenizer) (*statement.UpdateStatement, error) {
 	return update, nil
 }
 
+// parseInsert 解析insert语句
 func parseInsert(tokenizer *Tokenizer) (*statement.InsertStatement, error) {
 	insert := &statement.InsertStatement{}
 
@@ -455,6 +469,7 @@ func parseInsert(tokenizer *Tokenizer) (*statement.InsertStatement, error) {
 	return insert, nil
 }
 
+// parseSelect 解析select语句
 func parseSelect(tokenizer *Tokenizer) (*statement.SelectStatement, error) {
 	read := &statement.SelectStatement{}
 
@@ -532,6 +547,7 @@ func parseSelect(tokenizer *Tokenizer) (*statement.SelectStatement, error) {
 	return read, nil
 }
 
+// parserWhere 解析where子句
 func parserWhere(tokenizer *Tokenizer) (*statement.WhereSubStatement, error) {
 	where := &statement.WhereSubStatement{}
 
@@ -582,6 +598,7 @@ func parserWhere(tokenizer *Tokenizer) (*statement.WhereSubStatement, error) {
 
 }
 
+// parseSingleExpression 解析单个表达式
 func parseSingleExpression(tokenizer *Tokenizer) (*statement.SingleExpression, error) {
 	exp := &statement.SingleExpression{}
 
