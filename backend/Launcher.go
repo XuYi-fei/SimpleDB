@@ -48,7 +48,7 @@ func createDB(path string) {
 	if err != nil {
 		panic(err)
 	}
-	dm := dm.CreateDataManager(path, DEFAULT_MEM, tm)
+	dm := dm.CreateDataManager(path, DEFAULT_MEM)
 	vm := vm.NewVersionManager(tm, dm)
 	tbm.CreateTableManger(path, vm, dm)
 	tm.Close()

@@ -13,7 +13,7 @@ import (
 
 type DataManager struct {
 	// TM 事务管理器
-	TM *tm.TransactionManagerImpl
+	//TM *tm.TransactionManagerImpl
 	// PC 页面缓存
 	PC *dmPage.PageCache
 	// DBLogger 数据库日志
@@ -26,10 +26,10 @@ type DataManager struct {
 	CacheManager *common.AbstractCache[*DataItem]
 }
 
-func NewDataManager(tm *tm.TransactionManagerImpl, pc *dmPage.PageCache, dbLogger *logger.DBLogger) *DataManager {
+func NewDataManager(pc *dmPage.PageCache, dbLogger *logger.DBLogger) *DataManager {
 
 	dataManager := &DataManager{
-		TM:       tm,
+		//TM:       tm,
 		PC:       pc,
 		DBLogger: dbLogger,
 		PIndex:   dmPageIndex.NewPageIndex(),
@@ -205,13 +205,14 @@ func (dataManager *DataManager) ReleaseForCache(dataItem *DataItem) {
 }
 
 // CreateDataManager 创建数据管理器
-func CreateDataManager(path string, memory int64, tm *tm.TransactionManagerImpl) *DataManager {
+func CreateDataManager(path string, memory int64) *DataManager {
 	// 创建一个PageCache实例，path是文件路径，mem是内存大小
 	PC := dmPage.CreatePageCache(path, memory)
 	// 创建一个Logger实例，path是文件路径
 	DBLogger := logger.CreateLogger(path)
 	// 创建一个DataManager实例，pc是PageCache实例，lg是Logger实例，tm是TransactionManager实例
-	dataManager := NewDataManager(tm, PC, DBLogger)
+	//dataManager := NewDataManager(tm, PC, DBLogger)
+	dataManager := NewDataManager(PC, DBLogger)
 	// 初始化PageOne
 	dataManager.InitPageOne()
 	// 返回创建的DataManagerImpl实例
@@ -234,7 +235,8 @@ func OpenDataManager(path string, memory int64, tm *tm.TransactionManagerImpl) *
 	// 打开一个Logger实例，path是文件路径
 	DBLogger := logger.OpenLogger(path)
 	// 创建一个DataManager 实例，pc是PageCache实例，lg是Logger实例，tm是TransactionManager实例
-	dataManager := NewDataManager(tm, PC, DBLogger)
+	//dataManager := NewDataManager(tm, PC, DBLogger)
+	dataManager := NewDataManager(PC, DBLogger)
 	// 加载并检查PageOne，如果检查失败，则进行恢复操作
 	if !dataManager.LoadCheckPageOne() {
 		Recover(tm, DBLogger, PC)
