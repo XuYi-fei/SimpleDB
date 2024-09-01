@@ -41,6 +41,7 @@ func String2Bytes(str string) []byte {
 	return BytesConcat(length, []byte(str))
 }
 
+// Int64ToBytes 将int64转换为字节数组
 func Int64ToBytes(i int64) []byte {
 	raw := make([]byte, 8)
 	binary.BigEndian.PutUint64(raw, uint64(i))
@@ -62,7 +63,7 @@ func ParseString(raw []byte) ParseStringResult {
 	}
 }
 
-// Str2Uid 根据key的字符串，生成一个Uid
+// Str2Uid 根据key的字符串，生成一个Uid/Key，这个是用来构建索引的，对于数字直接转换即可，字符串则需要这个函数
 func Str2Uid(key string) int64 {
 	var seed int64 = 13331
 	var result int64 = 0

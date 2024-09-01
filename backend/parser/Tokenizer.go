@@ -177,20 +177,24 @@ func (tokenizer *Tokenizer) nextQuoteState() (string, error) {
 	return sb.String(), nil
 }
 
+// IsDigit 判断一个字节是否是数字
 func IsDigit(b byte) bool {
 	return b >= '0' && b <= '9'
 }
 
+// IsAlphaBeta 判断一个字节是否是字母
 func IsAlphaBeta(b byte) bool {
 	return (b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z')
 
 }
 
+// IsSymbol 判断一个字节是否是符号
 func IsSymbol(b byte) bool {
 	return b == '>' || b == '<' || b == '=' || b == '*' ||
 		b == ',' || b == '(' || b == ')'
 }
 
+// IsBlank 判断一个字节是否是空白字符
 func IsBlank(b byte) bool {
 	return b == '\n' || b == ' ' || b == '\t'
 }

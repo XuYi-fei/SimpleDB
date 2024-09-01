@@ -383,6 +383,7 @@ func (table *Table) Read(xid int64, read *statement.SelectStatement) (string, er
 	return result, nil
 }
 
+// Insert 用于向表中插入记录
 func (table *Table) Insert(xid int64, insert *statement.InsertStatement) error {
 	entry, err := table.string2Entry(insert.Values)
 	if err != nil {
@@ -413,7 +414,7 @@ func (table *Table) string2Entry(values []string) (map[string]interface{}, error
 	entry := make(map[string]interface{})
 	for i, _ := range values {
 		field := table.Fields[i]
-		v := field.string2Value(values[i])
+		v := field.String2Value(values[i])
 		entry[field.FieldName] = v
 	}
 	return entry, nil

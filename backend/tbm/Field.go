@@ -161,13 +161,14 @@ func fieldTypeCheck(fieldType string) error {
 	return errors.New(commons.ErrorMessage.InvalidFieldTypeError)
 }
 
+// IsIndexed 判断字段是否有索引
 func (field *Field) IsIndexed() bool {
 	return field.index != 0
 }
 
-// Insert 将key和uid插入到B+树索引中
-func (field *Field) Insert(key interface{}, uid int64) error {
-	uKey := field.Value2Uid(key)
+// Insert 将value和uid插入到B+树索引中
+func (field *Field) Insert(value interface{}, uid int64) error {
+	uKey := field.Value2UKey(value)
 	err := field.bt.Insert(uKey, uid)
 	if err != nil {
 		return err
@@ -180,26 +181,7 @@ func (field *Field) Search(left int64, right int64) ([]int64, error) {
 	return field.bt.SearchRange(left, right)
 }
 
-func (field *Field) string2Value(str string) interface{} {
-	switch field.FieldType {
-	case "string":
-		return str
-	case "int32":
-		num, err := strconv.ParseInt(str, 10, 32)
-		if err != nil {
-			panic(err)
-		}
-		return int32(num)
-	case "int64":
-		num, err := strconv.ParseInt(str, 10, 64)
-		if err != nil {
-			panic(err)
-		}
-		return int64(num)
-	}
-	return nil
-}
-
+// String2Value 将字符串转换为字段值
 func (field *Field) String2Value(str string) interface{} {
 	switch field.FieldType {
 	case "string":
@@ -221,22 +203,23 @@ func (field *Field) String2Value(str string) interface{} {
 	return nil
 }
 
-// Value2Uid 根据key生成uid
-func (field *Field) Value2Uid(key interface{}) int64 {
-	var uid int64 = 0
+// Value2UKey 根据value生成一个key，这个是用来构建索引的，对于数字直接转换即可
+// 对于字符串，需要按照某个规则转换为数字，从而使得构建的索引能够比较大小
+func (field *Field) Value2UKey(key interface{}) int64 {
+	var uKey int64 = 0
 	switch field.FieldType {
 	case "string":
-		uid = commons.Str2Uid(key.(string))
+		uKey = commons.Str2Uid(key.(string))
 		break
 	case "int32":
-		uint := int(key.(int32))
-		uid = int64(uint)
+		tmp := int(key.(int32))
+		uKey = int64(tmp)
 		break
 	case "int64":
-		uid = key.(int64)
+		uKey = key.(int64)
 		break
 	}
-	return uid
+	return uKey
 }
 
 // Value2Raw 将value转换为原始字节数组
@@ -272,20 +255,20 @@ func (field *Field) CalExp(exp *statement.SingleExpression) (*CalFieldResult, er
 	case "<":
 		result.left = 0
 		v = field.String2Value(exp.Value)
-		result.right = field.Value2Uid(v)
+		result.right = field.Value2UKey(v)
 		if result.right > 0 {
 			result.right -= 1
 		}
 		break
 	case "=":
 		v = field.String2Value(exp.Value)
-		result.left = field.Value2Uid(v)
+		result.left = field.Value2UKey(v)
 		result.right = result.left
 		break
 	case ">":
 		result.right = math.MaxInt64
 		v = field.String2Value(exp.Value)
-		result.left = field.Value2Uid(v) + 1
+		result.left = field.Value2UKey(v) + 1
 		break
 	}
 
@@ -337,6 +320,7 @@ func (field *Field) PrintValue(v interface{}) string {
 	return ""
 }
 
+// String 用于打印Field对象
 func (field *Field) String() string {
 	result := "("
 	result += field.FieldName
